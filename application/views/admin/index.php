@@ -1849,4 +1849,9 @@ $this->load->view('common/nav');
 
 <!--[if !IE]> -->
 
+<?php
+
+$this->load->view('common/footer');
+?>
+
 

@@ -8,6 +8,7 @@
 $base_css_url = $this->config->item('css_url');
 $base_js_url = $this->config->item('js_url');
 $base_img_url = $this->config->item('img_url');
+$static_url = $this->config->item('static_url');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,13 +31,11 @@ $base_img_url = $this->config->item('img_url');
     <!-- ace styles -->
     <link rel="stylesheet" href="<?php echo $base_css_url?>/ace.min.css" />
 
-    <!--[if lte IE 9]>
     <link rel="stylesheet" href="<?php echo $base_css_url?>/ace-part2.min.css" />
     <![endif]-->
     <link rel="stylesheet" href="<?php echo $base_css_url?>/ace-skins.min.css" />
     <link rel="stylesheet" href="<?php echo $base_css_url?>/ace-rtl.min.css" />
 
-    <!--[if lte IE 9]>
     <link rel="stylesheet" href="<?php echo $base_css_url?>/ace-ie.min.css" />
     <![endif]-->
 
@@ -47,8 +46,7 @@ $base_img_url = $this->config->item('img_url');
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 
-    <!--[if lte IE 8]>
-    <script src="<?php echo $base_js_url?>/html5shiv.js"></script>
+    <script src="<?php  echo $base_js_url  ?>/html5shiv.js"></script>
     <script src="<?php echo $base_js_url?>/respond.min.js"></script>
     <![endif]-->
 </head>

@@ -15,9 +15,7 @@ class Admin extends BaseController{
 
     public function index(){
 
-
         $this->load->view('admin/index');
-
 
     }
 

@@ -5,28 +5,19 @@
  * Date: 2016/4/21 0021
  * Time: 下午 8:07
  */
-
+$base_css_url = $this->config->item('css_url');
+$base_js_url = $this->config->item('js_url');
+$base_img_url = $this->config->item('img_url');
+$static_url = $this->config->item('static_url');
 ?>
 
-<script type="text/javascript">
-    window.jQuery || document.write("<script src='<?php echo $base_js_url?>/jquery.min.js'>"+"<"+"/script>");
-</script>
 
-<!-- <![endif]-->
-
-<!--[if IE]>
-<script type="text/javascript">
-    window.jQuery || document.write("<script src='<?php echo $base_js_url?>/jquery1x.min.js'>"+"<"+"/script>");
-</script>
-<![endif]-->
-<script type="text/javascript">
-    if('ontouchstart' in document.documentElement) document.write("<script src='<?php echo $base_js_url?>/jquery.mobile.custom.min.js'>"+"<"+"/script>");
-</script>
+<script src="<?php echo $base_js_url?>/jquery.min.js"></script>
+<script src="<?php echo $base_js_url?>/jquery.mobile.custom.min.js"></script>
 <script src="<?php echo $base_js_url?>/bootstrap.min.js"></script>
 
 <!-- page specific plugin scripts -->
 
-<!--[if lte IE 8]>
 <script src="<?php echo $base_js_url?>/excanvas.min.js"></script>
 <![endif]-->
 <script src="<?php echo $base_js_url?>/jquery-ui.custom.min.js"></script>
@@ -251,15 +242,15 @@
     })
 </script>
 
-<link rel="stylesheet" href="../assets/css/ace.onpage-help.css" />
+<link rel="stylesheet" href="<?php echo $base_css_url?>/css/ace.onpage-help.css" />
 <link rel="stylesheet" href="../docs/assets/js/themes/sunburst.css" />
 
 <script type="text/javascript"> ace.vars['base'] = '..'; </script>
 <script src="<?php echo $base_js_url?>/ace/ace.onpage-help.js"></script>
-<script src="../docs/assets/js/rainbow.js"></script>
-<script src="../docs/assets/js/language/generic.js"></script>
-<script src="../docs/assets/js/language/html.js"></script>
-<script src="../docs/assets/js/language/css.js"></script>
-<script src="../docs/assets/js/language/javascript.js"></script>
+<script src="<?php echo $static_url?>/docs/assets/js/rainbow.js"></script>
+<script src="<?php echo $static_url?>/docs/assets/js/language/generic.js"></script>
+<script src="<?php echo $static_url?>/docs/assets/js/language/html.js"></script>
+<script src="<?php echo $static_url?>/docs/assets/js/language/css.js"></script>
+<script src="<?php echo $static_url?>/docs/assets/js/language/javascript.js"></script>
 </body>
 </html>
