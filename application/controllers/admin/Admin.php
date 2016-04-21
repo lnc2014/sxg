@@ -19,6 +19,14 @@ class Admin extends BaseController{
 
     }
 
+    /**
+     * 退出登录
+     */
+    public function login_out(){
+        if(session_destroy()){
+            redirect('admin/login');
+        }
+    }
     public function test(){
         echo  222;
     }
