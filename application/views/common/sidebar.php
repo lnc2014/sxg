@@ -43,7 +43,7 @@
     </div><!-- /.sidebar-shortcuts -->
 
     <ul class="nav nav-list">
-        <li class="<?php echo $active;?>">
+        <li class="<?php if($controller == 'index'){echo 'active';}?>">
             <a href="<?php echo site_url('admin/admin/index')?>">
                 <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text">主页</span>
@@ -329,12 +329,11 @@
             <b class="arrow"></b>
         </li>
 
-        <li class="">
-            <a href="gallery.html">
-                <i class="menu-icon fa fa-picture-o"></i>
-                <span class="menu-text"> Gallery </span>
+        <li class="<?php if($controller == 'account'){echo 'active';}?>">
+            <a href="<?php echo site_url('admin/admin/account')?>">
+                <i class="menu-icon fa fa-list-alt"></i>
+                <span class="menu-text">后台账号</span>
             </a>
-
             <b class="arrow"></b>
         </li>
 
