@@ -16,7 +16,7 @@ class BaseController extends CI_Controller{
 
     public function __construct(){
         parent::__construct();
-
+        session_start(600);
         $this->load->helper('url');
         $this->admin_name = empty($_SESSION['admin_name'])?'':$_SESSION['admin_name'];
         $this->admin_id = empty($_SESSION['admin_id'])?'':$_SESSION['admin_id'];

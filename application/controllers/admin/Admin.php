@@ -9,8 +9,14 @@ include_once 'BaseController.php';
 
 class Admin extends BaseController{
 
+    /**
+     * 后台登录首页
+     */
+
     public function index(){
-        var_dump($_SESSION);
+
+
+        $this->load->view('admin/index');
 
 
     }

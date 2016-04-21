@@ -14,14 +14,12 @@ class login extends CI_Controller{
 
     public function index(){
 
+        session_start(600);
         $admin_name = empty($_SESSION['admin_name'])?'':$_SESSION['admin_name'];
         $admin_id = empty($_SESSION['admin_id'])?'':$_SESSION['admin_id'];
         $admin_sign = empty($_SESSION['sign'])?'':$_SESSION['sign'];
-
-        var_dump($admin_name);exit;
-
+//已经登录不在需要登录
         if(!empty($admin_name) && !empty($admin_sign)){
-
             $this->load->helper('url');
             redirect('admin/admin/index');
         }
@@ -30,6 +28,11 @@ class login extends CI_Controller{
     }
 
 
+    public function test()
+    {
+
+        var_dump($_SESSION);exit;
+    }
     /**
      * 登录验证
      */

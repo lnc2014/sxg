@@ -217,6 +217,8 @@ $base_img_url = $this->config->item('img_url');
                 dataType: "json",
                 success:function(data){
 
+//                    console.log(data);return;
+
                     if(data.code == 0003){
 
                         window.location.href = '<?php echo site_url('admin/admin/index')?>';
