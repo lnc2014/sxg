@@ -24,6 +24,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 $config['base_url'] = '';
+$config['css_url'] = 'http://127.0.0.1/sxg/static/css';
+$config['js_url'] = 'http://127.0.0.1/sxg/static/js';
+$config['img_url'] = 'http://127.0.0.1/sxg/static/css';
 
 /*
 |--------------------------------------------------------------------------

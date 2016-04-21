@@ -11,21 +11,19 @@ class BaseController extends CI_Controller{
     public $admin_name='';
     public $admin_group;
     public $admin_id;
-    public $sign;
+    public $admin_sign;
 
 
     public function __construct(){
         parent::__construct();
 
-        session_start();
-        $this->admin_name = $_SESSION['admin_name'];
-        $this->admin_id = $_SESSION['admin_id'];
-        $this->sign = $_SESSION['sign'];
+        $this->load->helper('url');
+        $this->admin_name = empty($_SESSION['admin_name'])?'':$_SESSION['admin_name'];
+        $this->admin_id = empty($_SESSION['admin_id'])?'':$_SESSION['admin_id'];
+        $this->admin_sign = empty($_SESSION['sign'])?'':$_SESSION['sign'];
         if(!$this->check_login()){
-            $this->load->view('login/login');
+            redirect('admin/login');
         }
-
-
     }
 
     /**
@@ -35,16 +33,14 @@ class BaseController extends CI_Controller{
      */
     public function check_login(){
 
-        $this->sign = $_SESSION['sign'];
-
-        if(isset($this->sign) && !empty($this->sign)){
+        if(isset($this->admin_sign) && !empty($this->admin_sign)){
 
             $params = array(
                 'admin_name' =>$this->admin_name,
                 'admin_id' =>$this->admin_id,
             );
             $this->load->library('common/sign');
-            $check = $this->sign->check_sign($params,$this->sign);
+            $check = $this->sign->check_sign($params,$this->admin_sign);
             //签名是不是成功，作为登录验证的一个标准
             if($check){
                 //TODO 账号密码验证

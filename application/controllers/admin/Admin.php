@@ -5,13 +5,17 @@
  * Date: 2016/4/20 0020
  * Time: 下午 3:54
  */
+include_once 'BaseController.php';
 
 class Admin extends BaseController{
 
-
     public function index(){
+        var_dump($_SESSION);
 
 
-        echo 'Hello world';
+    }
+
+    public function test(){
+        echo  222;
     }
 }
