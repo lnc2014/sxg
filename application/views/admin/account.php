@@ -12,7 +12,6 @@ $this->load->view('common/nav');
 
 <div class="main-container" id="main-container">
     <?php
-
     $this->load->view('common/sidebar',array('controller'=>'account'));
     ?>
     <div class="main-content">
@@ -95,9 +94,18 @@ $this->load->view('common/nav');
 
                                 <td>
                                     <div class="hidden-sm hidden-xs btn-group">
-                                        <a href="" class="btn btn-xs btn-info">冻结</a>
-                                        <a href="" class="btn btn-xs btn-info">解冻</a>
-                                        <a href="" class="btn btn-xs btn-danger">删除</a>
+
+                                        <?php
+                                        if($admin['flag'] == 1){//正常使用
+                                            $dongjie_url = site_url("admin/admin/frozen_account/{$admin['id']}/0");
+                                            ?>
+                                            <a href="<?php echo $dongjie_url?>" onclick="return confirm('确认冻结该账号吗？')" class="btn btn-xs btn-info">冻结</a>
+                                       <?php }elseif($admin['flag'] == 0){//冻结账号
+                                            $jiedong_url = site_url("admin/admin/frozen_account/{$admin['id']}/1");
+                                            ?>
+                                            <a href="<?php echo $jiedong_url;?>" onclick="return confirm('确认解冻该账号吗？')" class="btn btn-xs btn-info">解冻</a>
+                                        <?php }  ?>
+                                        <a href="<?php echo site_url("admin/admin/delete_account/{$admin['id']}") ?>" onclick="return confirm('确认删除该账号吗，该操作为不可恢复操作？')" class="btn btn-xs btn-danger">删除</a>
                                     </div>
 
 

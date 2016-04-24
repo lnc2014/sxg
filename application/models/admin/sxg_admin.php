@@ -85,5 +85,27 @@ class Sxg_admin extends CI_Model{
         return $result;
 
     }
+    /**
+     * 冻结或者解冻账号
+     */
+    public function frozen_account($admin_id, $flag=1){
+        $data = array(
+            'flag' => $flag
+        );
+        $this->db->where('id', $admin_id);
+        return $this->db->update($this->admin_table, $data);
+    }
+
+    /**
+     * 删除子帐号
+     * @param $admin_id
+     * @return mixed
+     */
+    public function delete_account($admin_id){
+
+        $this->db->where('id', $admin_id);
+        return $this->db->delete($this->admin_table);
+
+    }
 
 }

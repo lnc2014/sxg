@@ -32,6 +32,89 @@ class Admin extends BaseController{
         ));
 
     }
+
+    /**
+     * 冻结账号
+     */
+
+    public function frozen_account(){
+
+        $admin_id = $this->uri->segment(4);//使用ci自带方法拿到admin_id
+        $flag = $this->uri->segment(5);//使用ci自带方法拿到是否冻结还是解冻
+
+        if(empty($admin_id)){
+            //跳转到错误页面
+            $this->load->view('errors/error',array('code'=>500,'msg'=>'冻结账号不能为空！'));
+        }else{
+
+            $this->load->model('admin/sxg_admin');
+            $admin = $this->sxg_admin->frozen_account($admin_id, $flag);
+            if($flag == 1){
+                $msg = '解冻成功';
+                $error_msg = '解冻失败，请联系管理员';
+            }else{
+                $msg = '冻结成功';
+                $error_msg = '冻结失败，请联系管理员';
+            }
+            $url = site_url('admin/admin/account');
+            if($admin){
+                echo "<script>
+                        alert('".$msg."');
+                        window.location.href='".$url."';
+                      </script>";
+                exit;
+            }else{
+                echo "<script>
+                        alert('".$error_msg."');
+                        window.location.href='".$url."';
+                      </script>";
+                exit;
+            }
+        }
+
+    }
+
+    /**
+     * 删除子帐号
+     */
+
+    public function delete_account(){
+        $admin_id = $this->uri->segment(4);//使用ci自带方法拿到admin_id
+
+
+        if(empty($admin_id)){
+            //跳转到错误页面
+            $this->load->view('errors/error',array('code'=>500,'msg'=>'冻结账号不能为空！'));
+        }else{
+
+            $this->load->model('admin/sxg_admin');
+            $admin = $this->sxg_admin->delete_account($admin_id);
+
+            $url = site_url('admin/admin/account');
+            if($admin){
+                echo "<script>
+                        alert('删除子帐号成功！');
+                        window.location.href='".$url."';
+                      </script>";
+                exit;
+            }else{
+                echo "<script>
+                        alert('删除子帐号失败，请联系管理员！');
+                        window.location.href='".$url."';
+                      </script>";
+                exit;
+            }
+        }
+    }
+
+    //后台错误页面
+    public function error(){
+        $this->load->view('errors/error');
+    }
+
+    /**
+     * 增加子帐号
+     */
     public function add_account(){
 
         if(!empty($_POST)){
@@ -74,6 +157,16 @@ class Admin extends BaseController{
         $this->load->view('admin/add_account');
 
     }
+
+    /**
+     * 用户管理
+     */
+
+    public function user(){
+
+        $this->load->view('admin/user');
+
+    }
     /**
      * 退出登录
      */
@@ -81,8 +174,5 @@ class Admin extends BaseController{
         if(session_destroy()){
             redirect('admin/login');
         }
-    }
-    public function test(){
-        echo  222;
     }
 }

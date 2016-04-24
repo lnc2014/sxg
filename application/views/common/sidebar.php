@@ -52,10 +52,10 @@
             <b class="arrow"></b>
         </li>
 
-        <li class="">
+        <li class="<?php if($controller == 'order'){echo 'active';}?>">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-desktop"></i>
-                <span class="menu-text"> UI &amp; Elements </span>
+                <span class="menu-text">订单中心</span>
 
                 <b class="arrow fa fa-angle-down"></b>
             </a>
@@ -221,10 +221,10 @@
             </ul>
         </li>
 
-        <li class="">
-            <a href="#" class="dropdown-toggle">
+        <li class="<?php if($controller == 'user'){echo 'active';}?>">
+            <a href="<?php echo site_url('admin/admin/user')?>" class="dropdown-toggle">
                 <i class="menu-icon fa fa-list"></i>
-                <span class="menu-text"> Tables </span>
+                <span class="menu-text"> 用户管理 </span>
 
                 <b class="arrow fa fa-angle-down"></b>
             </a>
@@ -232,19 +232,35 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
-                <li class="">
-                    <a href="tables.html">
+                <li class="<?php if($controller == 'user'){echo 'active';}?>">
+                    <a href="<?php echo site_url('admin/admin/user')?>">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        Simple &amp; Dynamic
+                        用户管理
                     </a>
 
                     <b class="arrow"></b>
                 </li>
 
-                <li class="">
+                <li class="<?php if($controller == 'repair'){echo 'active';}?>">
+                    <a href="<?php echo site_url('admin/admin/repair')?>">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        维修员管理
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="<?php if($controller == 'repair_check'){echo 'active';}?>">
                     <a href="jqgrid.html">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        jqGrid plugin
+                        维修员审核
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="<?php if($controller == 'user_feedback'){echo 'active';}?>">
+                    <a href="jqgrid.html">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        用户投诉
                     </a>
 
                     <b class="arrow"></b>
@@ -255,7 +271,7 @@
         <li class="">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-pencil-square-o"></i>
-                <span class="menu-text"> Forms </span>
+                <span class="menu-text"> 运营方案</span>
 
                 <b class="arrow fa fa-angle-down"></b>
             </a>
@@ -304,30 +320,13 @@
         <li class="">
             <a href="widgets.html">
                 <i class="menu-icon fa fa-list-alt"></i>
-                <span class="menu-text"> Widgets </span>
+                <span class="menu-text">统计数据</span>
             </a>
 
             <b class="arrow"></b>
         </li>
 
-        <li class="">
-            <a href="calendar.html">
-                <i class="menu-icon fa fa-calendar"></i>
 
-							<span class="menu-text">
-								Calendar
-
-                                <!-- #section:basics/sidebar.layout.badge -->
-								<span class="badge badge-transparent tooltip-error" title="2 Important Events">
-									<i class="ace-icon fa fa-exclamation-triangle red bigger-130"></i>
-								</span>
-
-                                <!-- /section:basics/sidebar.layout.badge -->
-							</span>
-            </a>
-
-            <b class="arrow"></b>
-        </li>
 
         <li class="<?php if($controller == 'account'){echo 'active';}?>">
             <a href="<?php echo site_url('admin/admin/account')?>">
@@ -337,138 +336,6 @@
             <b class="arrow"></b>
         </li>
 
-        <li class="">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-tag"></i>
-                <span class="menu-text"> More Pages </span>
-
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-
-            <b class="arrow"></b>
-
-            <ul class="submenu">
-                <li class="">
-                    <a href="profile.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        User Profile
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="inbox.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Inbox
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="pricing.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Pricing Tables
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="invoice.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Invoice
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="timeline.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Timeline
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="login.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Login &amp; Register
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-            </ul>
-        </li>
-
-        <li class="">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-file-o"></i>
-
-							<span class="menu-text">
-								Other Pages
-
-                                <!-- #section:basics/sidebar.layout.badge -->
-								<span class="badge badge-primary">5</span>
-
-                                <!-- /section:basics/sidebar.layout.badge -->
-							</span>
-
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-
-            <b class="arrow"></b>
-
-            <ul class="submenu">
-                <li class="">
-                    <a href="faq.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        FAQ
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="error-404.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Error 404
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="error-500.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Error 500
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="grid.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Grid
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="blank.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Blank Page
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-            </ul>
-        </li>
     </ul><!-- /.nav-list -->
 
     <!-- #section:basics/sidebar.layout.minimize -->
