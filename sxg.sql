@@ -36,8 +36,6 @@ CREATE TABLE `sxg_address` (
   PRIMARY KEY (`address_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Data for the table `sxg_address` */
-
 /*Table structure for table `sxg_admin` */
 
 DROP TABLE IF EXISTS `sxg_admin`;
@@ -53,10 +51,6 @@ CREATE TABLE `sxg_admin` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
-/*Data for the table `sxg_admin` */
-
-insert  into `sxg_admin`(`id`,`username`,`psw`,`parent_id`,`group_id`,`flag`,`createtime`) values (1,'root','e10adc3949ba59abbe56e057f20f883e',0,'1',1,2147483647),(3,'22','22',1,'1,2,3',1,1461254271),(4,'22','b6d767d2f8ed5d21a44b0e5886680cb9',1,'1,2,3',0,1461254290),(8,'33','182be0c5cdcd5072bb1864cdee4d3d6e',1,'2',1,1461254600),(9,'admin','e10adc3949ba59abbe56e057f20f883e',1,'1,2,4',1,1461254659),(10,'admin','e10adc3949ba59abbe56e057f20f883e',1,'1,2,4',0,1461254694),(11,'admin','e10adc3949ba59abbe56e057f20f883e',1,'1,2,3,4',1,1461254727),(12,'admin','e10adc3949ba59abbe56e057f20f883e',1,'1,2,3,4',1,1461254751),(13,'admin','1dfc1f2c8e8e79447ca5224ca5508f93',1,'2,3,4',1,1461254793),(14,'333','182be0c5cdcd5072bb1864cdee4d3d6e',1,'1',1,1461256281),(15,'22','bcbe3365e6ac95ea2c0343a2395834dd',1,'1,2,3,4',1,1461256310),(17,'lnc','21232f297a57a5a743894a0e4a801fc3',1,'1,2,3,4',1,1461483426);
-
 /*Table structure for table `sxg_admin_group` */
 
 DROP TABLE IF EXISTS `sxg_admin_group`;
@@ -69,10 +63,6 @@ CREATE TABLE `sxg_admin_group` (
   `create_time` int(11) DEFAULT NULL COMMENT '创建时间，时间戳',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='管理员组';
-
-/*Data for the table `sxg_admin_group` */
-
-insert  into `sxg_admin_group`(`id`,`group_name`,`acl`,`status_is`,`create_time`) values (1,'订单中心','','Y',2147483647),(2,'用户管理','','Y',2147483647),(3,'运营方案','','Y',2147483647),(4,'数据统计','','Y',2147483647);
 
 /*Table structure for table `sxg_delivery` */
 
@@ -87,8 +77,6 @@ CREATE TABLE `sxg_delivery` (
   `updatetime` int(11) DEFAULT NULL COMMENT '物流信息更新时间',
   PRIMARY KEY (`delivery_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Data for the table `sxg_delivery` */
 
 /*Table structure for table `sxg_invoice` */
 
@@ -106,8 +94,6 @@ CREATE TABLE `sxg_invoice` (
   `updatetime` int(11) DEFAULT NULL COMMENT '发票审核更新时间',
   PRIMARY KEY (`invoice_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Data for the table `sxg_invoice` */
 
 /*Table structure for table `sxg_order` */
 
@@ -135,8 +121,6 @@ CREATE TABLE `sxg_order` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Data for the table `sxg_order` */
-
 /*Table structure for table `sxg_repair_user` */
 
 DROP TABLE IF EXISTS `sxg_repair_user`;
@@ -145,20 +129,27 @@ CREATE TABLE `sxg_repair_user` (
   `repair_user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '维修人员id',
   `account` varchar(50) NOT NULL COMMENT '账号',
   `mobile` varchar(50) DEFAULT NULL COMMENT '电话号码',
+  `address_id` int(11) DEFAULT NULL COMMENT '地址信息',
+  `id_cart` varchar(50) DEFAULT NULL COMMENT '身份证号码',
   `repair_num` varchar(50) DEFAULT NULL COMMENT '工号',
   `user_name` varchar(50) DEFAULT NULL COMMENT '姓名',
   `score` decimal(10,2) DEFAULT NULL COMMENT '评分',
   `commission` decimal(10,2) DEFAULT NULL COMMENT '累计佣金',
   `order_num` int(11) DEFAULT NULL COMMENT '接单总数量',
   `trans_num` int(11) DEFAULT NULL COMMENT '转单总数量',
-  `status` tinyint(4) DEFAULT NULL COMMENT '维修人员状态，1为正常，2为待审核，0为冻结',
+  `bank_card` varchar(50) DEFAULT NULL COMMENT '银行卡号',
+  `bank_name` varchar(50) DEFAULT NULL COMMENT '银行名称',
+  `bank_type` varchar(50) DEFAULT NULL COMMENT '开户行名称',
+  `id_card_pic` varchar(50) DEFAULT NULL COMMENT '身份证照片',
+  `qualification_pic` varchar(50) DEFAULT NULL COMMENT '资历证明图片',
+  `good_print_band` varchar(100) DEFAULT NULL COMMENT '擅长维修的品牌',
+  `good_print_type` varchar(100) DEFAULT NULL COMMENT '擅长维修的型号',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NULL DEFAULT NULL COMMENT '修改时间',
+  `status` tinyint(4) DEFAULT NULL COMMENT '维修人员状态，1为正常，2为待审核，0为冻结',
   `flag` tinyint(4) DEFAULT '1' COMMENT '标识，1为有效，0为无效',
   PRIMARY KEY (`repair_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Data for the table `sxg_repair_user` */
 
 /*Table structure for table `sxg_user` */
 
@@ -176,8 +167,6 @@ CREATE TABLE `sxg_user` (
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Data for the table `sxg_user` */
-
 /*Table structure for table `sxg_user_feedback` */
 
 DROP TABLE IF EXISTS `sxg_user_feedback`;
@@ -190,8 +179,6 @@ CREATE TABLE `sxg_user_feedback` (
   `feedback_time` int(11) DEFAULT NULL COMMENT '反馈时间,时间戳',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Data for the table `sxg_user_feedback` */
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
