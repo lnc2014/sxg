@@ -112,14 +112,15 @@ CREATE TABLE `sxg_order` (
   `address_id` int(11) DEFAULT NULL COMMENT '维修地址Id',
   `repair_assign` tinyint(4) DEFAULT '1' COMMENT '维修人员指定，1为随机指派，2为指定维修人员，默认为1',
   `repair_user_id` int(11) DEFAULT NULL COMMENT '维修人员Id',
-  `visit_option` tinyint(4) DEFAULT '1' COMMENT '1为跟维修人员商定，2为指定时间',
+  `visit_option` tinyint(4) DEFAULT '1' COMMENT '1为跟维修人员商定，2为指定时间,3为立即上门',
   `visit_time` int(11) DEFAULT NULL COMMENT '指定上门的时间',
-  `status` tinyint(4) DEFAULT NULL COMMENT '1,待上门2,检测中3,调配件4,维修中5,待点评6,已结束7,已取消',
+  `is_pay` tinyint(4) DEFAULT '0' COMMENT '是不是已经结款，0为未结款，1为结款',
+  `status` tinyint(4) DEFAULT '1' COMMENT '1,待上门2,检测中3,调配件4,维修中5,待点评6,已结束7,已取消',
   `repair_money` decimal(10,2) DEFAULT NULL COMMENT '维修费用',
   `createtime` int(11) DEFAULT NULL COMMENT '下单时间',
-  `updatetime` int(11) DEFAULT NULL COMMENT '更新时间',
+  `updatetime` int(11) DEFAULT NULL COMMENT '更新时间，订单完成时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `sxg_repair_user` */
 
@@ -165,7 +166,7 @@ CREATE TABLE `sxg_user` (
   `status` tinyint(4) DEFAULT '1' COMMENT '状态，1为正常，0为冻结',
   `flag` tinyint(4) DEFAULT '1' COMMENT '是否有效，1有效。',
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `sxg_user_feedback` */
 
