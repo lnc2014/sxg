@@ -233,7 +233,7 @@
 
             <ul class="submenu">
                 <li class="<?php if($controller == 'user'){echo 'active';}?>">
-                    <a href="<?php echo site_url('admin/admin/user')?>">
+                    <a href="<?php echo site_url('admin/user/index')?>">
                         <i class="menu-icon fa fa-caret-right"></i>
                         用户管理
                     </a>

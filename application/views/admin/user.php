@@ -5,7 +5,6 @@
  * Date: 2016/4/24
  * Time: 17:04
  */
-
 $this->load->view('common/header');
 $this->load->view('common/nav');
 ?>
@@ -88,9 +87,7 @@ $this->load->view('common/nav');
                                 <table id="sample-table-1" class="table table-striped table-bordered table-hover">
                                     <thead>
                                     <tr>
-                                        <th class="center">
-                                            ID
-                                        </th>
+                                        <th class="center">ID</th>
                                         <th>用户账号</th>
                                         <th>所下订单</th>
                                         <th class="hidden-480">申请发票记录</th>
@@ -104,41 +101,48 @@ $this->load->view('common/nav');
                                     </thead>
 
                                     <tbody>
-                                    <tr>
-                                        <td class="center">
-                                            3                                </td>
+                                    <?php
+                                    foreach($users as $user){?>
+                                        <tr>
+                                            <td class="center"><?php echo $user['user_id'] ?></td>
+                                            <td><?php echo $user['user_name'] ?></td>
+                                            <td class="hidden-480"><a href="<?php echo site_url("admin/order/user_order/{$user['user_id']}")?>" class="btn-primary">点击查看</a></td>
 
-                                        <td>22</td>
-                                        <td class="hidden-480">22</td>
+                                            <td class="hidden-480"><a href="<?php echo site_url("admin/invoice/user_invoice/{$user['user_id']}")?>" class="btn-success">点击查看</a></td>
+                                            <td><?php if($user['is_month'] == 1){ echo '月结';}else{echo'非月结';}?></td>
+                                            <td><?php echo date('Y-m-d H:i:s',time())?></td>
+                                            <td><?php if($user['status'] == 1){ echo '正常';}else{echo'冻结';}?></td>
+                                            <td>$562</td>
+                                            <td>10天</td>
+                                            <td>
+                                                <div class="hidden-sm hidden-xs btn-group">
+                                                    <?php
 
-                                        <td class="hidden-480">
-                                    <span class="label label-sm label-success">
-                                        正常                                    </span>
-                                        </td>
-                                        <td>
-                                            订单中心;用户管理;运营方案;
-                                        </td>
-                                        <td>
-                                            订单中心;用户管理;运营方案;
-                                        </td>
-                                        <td>
-                                            订单中心;用户管理;运营方案;
-                                        </td>
-                                        <td>
-                                            订单中心;用户管理;运营方案;
-                                        </td>
-                                        <td>
-                                            订单中心;用户管理;运营方案;
-                                        </td>
-                                        <td>
-                                            <div class="hidden-sm hidden-xs btn-group"> 
-                                                <a href="http://127.0.0.1/sxg/index.php/admin/admin/frozen_account/3/0" onclick="return confirm('确认冻结该账号吗？')" class="btn btn-xs btn-info">冻结</a>
-                                                <a href="http://127.0.0.1/sxg/index.php/admin/admin/delete_account/3" onclick="return confirm('确认删除该账号吗，该操作为不可恢复操作？')" class="btn btn-xs btn-danger">删除</a>
-                                            </div>
+                                                    if($user['is_month'] == 1){
+                                                        $month_url = site_url("admin/user/month_user/{$user['user_id']}/0");
+                                                        echo '<a href="'.$month_url.'" onclick="return confirm(\'确认设为非月结账户吗？\')" class="btn btn-xs btn-info">设为非月结账户</a>';
+                                                    }else{
+                                                        $month_url = site_url("admin/user/month_user/{$user['user_id']}/1");
+                                                        echo '<a href="'.$month_url.'" onclick="return confirm(\'确认设为月结账户吗？\')" class="btn btn-xs btn-success">设为月结账户</a>';
+                                                    }?>
 
 
-                                        </td>
-                                    </tr>
+                                                    <?php
+                                                    if($user['status'] == 1){
+                                                        $user_url = site_url("admin/user/frozen_user/{$user['user_id']}/0");
+                                                        echo '<a href="'.$user_url.'" onclick="return confirm(\'确认冻结该账号吗？\')" class="btn btn-xs btn-danger">冻结该账户</a>';
+                                                    }else{
+                                                        $user_url = site_url("admin/user/frozen_user/{$user['user_id']}/1");
+                                                        echo '<a href="'.$user_url.'" onclick="return confirm(\'确认恢复该账号吗？\')" class="btn btn-xs btn-info">恢复该账户</a>';
+                                                    }?>
+
+                                                </div>
+
+
+                                            </td>
+                                        </tr>
+                                   <?php } ?>
+
 
                                     </tbody>
                                 </table>

@@ -6,15 +6,12 @@
  * Time: 下午 4:48
  */
 
-class Sxg_admin extends CI_Model{
+
+include_once 'BaseModel.php';
+class Sxg_admin extends BaseModel{
 
     private $admin_table = 'sxg_admin';
     private $admin_group_table = 'sxg_admin_group';
-
-    public function __construct(){
-
-        $this->load->database();
-    }
 
 
     /**

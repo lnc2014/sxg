@@ -158,15 +158,7 @@ class Admin extends BaseController{
 
     }
 
-    /**
-     * 用户管理
-     */
 
-    public function user(){
-
-        $this->load->view('admin/user');
-
-    }
     /**
      * 退出登录
      */
