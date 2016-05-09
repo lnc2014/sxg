@@ -221,7 +221,7 @@
             </ul>
         </li>
 
-        <li class="<?php if($controller == 'user'){echo 'active';}?>">
+        <li class="<?php if($second == 'user'){echo 'active';}?>">
             <a href="<?php echo site_url('admin/admin/user')?>" class="dropdown-toggle">
                 <i class="menu-icon fa fa-list"></i>
                 <span class="menu-text"> 用户管理 </span>
@@ -242,7 +242,7 @@
                 </li>
 
                 <li class="<?php if($controller == 'repair'){echo 'active';}?>">
-                    <a href="<?php echo site_url('admin/admin/repair')?>">
+                    <a href="<?php echo site_url('admin/repair/index')?>">
                         <i class="menu-icon fa fa-caret-right"></i>
                         维修员管理
                     </a>
@@ -250,7 +250,7 @@
                     <b class="arrow"></b>
                 </li>
                 <li class="<?php if($controller == 'repair_check'){echo 'active';}?>">
-                    <a href="jqgrid.html">
+                    <a href="<?php echo site_url('admin/repair/repair_check')?>">
                         <i class="menu-icon fa fa-caret-right"></i>
                         维修员审核
                     </a>
@@ -258,7 +258,7 @@
                     <b class="arrow"></b>
                 </li>
                 <li class="<?php if($controller == 'user_feedback'){echo 'active';}?>">
-                    <a href="jqgrid.html">
+                    <a href="<?php echo site_url('admin/user/user_feedback')?>">
                         <i class="menu-icon fa fa-caret-right"></i>
                         用户投诉
                     </a>

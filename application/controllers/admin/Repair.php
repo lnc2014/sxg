@@ -1,6 +1,6 @@
 <?php
 /**
- * Description：订单控制器
+ * Description：维修人员管理控制器
  * Author: LNC
  * Date: 2016/5/4
  * Time: 23:53
@@ -8,30 +8,33 @@
 
 include_once 'BaseController.php';
 
-class Order extends BaseController{
+class Repair extends BaseController{
 
     /**
-     * 通过个人的UserID找到个人的订单
+     * 维修人员管理列表
      */
-    public function user_order(){
+    public function index(){
 
-        $user_id = $this->uri->segment(4);//使用ci自带方法拿到user_id
+        $this->load->model('admin/sxg_repair_user');
+        $repairs = $this->sxg_repair_user->findAllRepairs();
 
-        if(empty($user_id)){
-            $this->load->view('errors/error',array('code'=>500,'msg'=>'用户ID不能为空'));
-        }else{
-            $this->load->model('admin/sxg_order');
-
-            $orders = $this->sxg_order->findOrdersByUserId($user_id);
-
-            $this->load->view('admin/user_order',array(
-                'orders' => $orders
-            ));
-        }
-
-
+        $this->load->view('admin/repair',array(
+            'repairs' => $repairs
+        ));
     }
 
+    /**
+     * 维修人员审核
+     */
+    public function repair_check(){
+
+        $this->load->model('admin/sxg_repair_user');
+        $repairs = $this->sxg_repair_user->findAllRepairs();
+
+        $this->load->view('admin/repair_check',array(
+            'repairs' => $repairs
+        ));
+    }
     /**
      * 订单详情
      */

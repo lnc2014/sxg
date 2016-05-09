@@ -34,7 +34,7 @@ CREATE TABLE `sxg_address` (
   `create_time` int(11) DEFAULT NULL COMMENT '创建时间，时间戳',
   `update_time` int(11) DEFAULT NULL COMMENT '更新时间，时间戳',
   PRIMARY KEY (`address_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `sxg_admin` */
 
@@ -88,12 +88,13 @@ CREATE TABLE `sxg_invoice` (
   `user_id` int(11) DEFAULT NULL COMMENT '发票申请人',
   `invoice_header` varchar(50) DEFAULT NULL COMMENT '发票抬头',
   `invoice_content` varchar(100) DEFAULT NULL COMMENT '发票内容',
+  `invoice_money` decimal(10,2) DEFAULT NULL COMMENT '发票金额',
   `delivery_way` tinyint(4) DEFAULT '1' COMMENT '配送方式，1为人工送达，2为物流，默认为人工',
   `delivery_id` int(11) DEFAULT NULL COMMENT '物流信息ID',
   `createtime` int(11) DEFAULT NULL COMMENT '发票申请时间',
   `updatetime` int(11) DEFAULT NULL COMMENT '发票审核更新时间',
   PRIMARY KEY (`invoice_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `sxg_order` */
 
@@ -150,7 +151,7 @@ CREATE TABLE `sxg_repair_user` (
   `status` tinyint(4) DEFAULT NULL COMMENT '维修人员状态，1为正常，2为待审核，0为冻结',
   `flag` tinyint(4) DEFAULT '1' COMMENT '标识，1为有效，0为无效',
   PRIMARY KEY (`repair_user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `sxg_user` */
 
@@ -179,7 +180,7 @@ CREATE TABLE `sxg_user_feedback` (
   `content` longtext COMMENT '反馈内容',
   `feedback_time` int(11) DEFAULT NULL COMMENT '反馈时间,时间戳',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

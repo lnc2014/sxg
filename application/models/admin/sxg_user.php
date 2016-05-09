@@ -11,6 +11,7 @@ include_once 'BaseModel.php';
 class Sxg_user extends BaseModel{
 
     private $user_table = 'sxg_user';
+    private $user_feedback_table = 'sxg_user_feedback';
 
 
     /**
@@ -24,6 +25,21 @@ class Sxg_user extends BaseModel{
         $result = $query->result_array();
         return $result;
     }
+
+
+    /**
+     * 找出所有的反馈意见，并且把用户信息带上
+     */
+
+
+    public function findAllFeedbacks(){
+        $this->db->select()->from('sxg_user_feedback AS a,sxg_user AS b');
+        $this->db->where('a.`user_id` = b.`user_id`');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        return $result;
+    }
+
     /**
      * 冻结或者解冻账号
      */

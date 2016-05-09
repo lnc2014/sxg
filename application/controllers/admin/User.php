@@ -25,6 +25,19 @@ class User extends BaseController{
     }
 
     /**
+     * 用户投诉
+     */
+    public function user_feedback(){
+
+        $this->load->model('admin/sxg_user');
+        $user_feedbacks = $this->sxg_user->findAllFeedbacks();
+
+        $this->load->view('admin/user_feedback',array(
+            'user_feedbacks' => $user_feedbacks
+        ));
+    }
+
+    /**
      * 冻结账号
      */
 

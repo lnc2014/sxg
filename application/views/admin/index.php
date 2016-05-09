@@ -13,7 +13,7 @@ $this->load->view('common/nav');
 <div class="main-container" id="main-container">
     <?php
 
-    $this->load->view('common/sidebar',array('controller'=>'index'));
+    $this->load->view('common/sidebar',array('controller'=>'index','second'=>'index'));
     ?>
     <div class="main-content">
         <!-- #section:basics/content.breadcrumbs -->
