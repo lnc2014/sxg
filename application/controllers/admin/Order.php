@@ -10,6 +10,17 @@ include_once 'BaseController.php';
 
 class Order extends BaseController{
 
+
+    /**
+     * 订单中心
+     */
+
+    public function index(){
+
+        $this->load->view('admin/order');
+
+    }
+
     /**
      * 通过个人的UserID找到个人的订单
      */
