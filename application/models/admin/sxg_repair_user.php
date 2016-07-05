@@ -11,8 +11,41 @@ class Sxg_repair_user extends BaseModel{
 
     private $repair_table = 'sxg_repair_user';
 
+    /**
+     * 查询单条用户记录
+     *
+     * @param array  $where
+     * @param string $fields
+     *
+     * PS : 可根据业务场景扩展
+     */
+    public function get_one($where, $fields='*')
+    {
+        return $this->db->select($fields)->where($where)->get($this->repair_table)->row_array();
+    }
 
+    /**
+     * 查询多条用户记录
+     * @param array  $where
+     * @param string $fields
+     */
+    public function get_list($where, $fields='*')
+    {
+        return $this->db->select($fields)->where($where)->get($this->repair_table)->result_array();
+    }
 
+    /**
+     * 新增
+     *
+     * @param array $data	更新字段
+     *
+     * @return int $res     返回成功插入记录对应的ID
+     */
+    public function add($data)
+    {
+        $this->db->insert($this->repair_table, $data);
+        return $this->db->insert_id();
+    }
     /**
      * 找出所有的维修人员
      * @return mixed
@@ -44,22 +77,19 @@ class Sxg_repair_user extends BaseModel{
 
     /**
      *
-     * 通过条件查找订单的相关的信息，返回一条数据
+     * 通过条件查找维修人员的信息
      * @param $user_id
      * @return mixed
      */
-    public function findOrdersByCondition($condition = array(),$more = 1){
-
-        $this->db->select()->from($this->order_table)->where($condition);
+    public function get_data($condition, $more = 1){
+        $this->db->select()->from($this->repair_table)->where($condition);
         $query = $this->db->get();
-
         //是返回一条数据还是多条数据
         if($more == 1){
             $result = $query->row_array();
         }else{
             $result = $query->result_array();
         }
-
         return $result;
     }
 

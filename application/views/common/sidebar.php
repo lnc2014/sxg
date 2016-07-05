@@ -92,7 +92,7 @@
             </ul>
         </li>
 
-        <li class="<?php if($second == 'user'){echo 'active';}?>">
+        <li class="<?php if($controller == 'user'){echo 'active';}?>">
             <a href="<?php echo site_url('admin/admin/user')?>" class="dropdown-toggle">
                 <i class="menu-icon fa fa-list"></i>
                 <span class="menu-text"> 用户管理 </span>
@@ -149,56 +149,17 @@
 
             <b class="arrow"></b>
 
-            <ul class="submenu">
-                <li class="">
-                    <a href="form-elements.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Form Elements
-                    </a>
 
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="form-wizard.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Wizard &amp; Validation
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="wysiwyg.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Wysiwyg &amp; Markdown
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="dropzone.html">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Dropzone File Upload
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-            </ul>
         </li>
 
         <li class="">
-            <a href="widgets.html">
+            <a href="#">
                 <i class="menu-icon fa fa-list-alt"></i>
                 <span class="menu-text">统计数据</span>
             </a>
 
             <b class="arrow"></b>
         </li>
-
-
-
         <li class="<?php if($controller == 'account'){echo 'active';}?>">
             <a href="<?php echo site_url('admin/admin/account')?>">
                 <i class="menu-icon fa fa-list-alt"></i>

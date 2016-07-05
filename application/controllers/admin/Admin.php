@@ -118,12 +118,10 @@ class Admin extends BaseController{
     public function add_account(){
 
         if(!empty($_POST)){
-
             $admin_name = empty($_POST['admin_name'])?'':$_POST['admin_name'];
             $admin_psw = empty($_POST['admin_psw'])?'':$_POST['admin_psw'];
             $admin_group = empty($_POST['admin_group'])?array():$_POST['admin_group'];
             $group = '';
-
             $count = count($admin_group);
             foreach($admin_group as $k=>$value){
 
@@ -152,10 +150,7 @@ class Admin extends BaseController{
 
             }
         }
-
-
         $this->load->view('admin/add_account');
-
     }
 
 

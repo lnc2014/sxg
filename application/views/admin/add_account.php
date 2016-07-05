@@ -12,7 +12,6 @@ $this->load->view('common/nav');
 
 <div class="main-container" id="main-container">
     <?php
-
     $this->load->view('common/sidebar',array('controller'=>'account'));
     ?>
     <div class="main-content">

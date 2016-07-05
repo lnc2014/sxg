@@ -14,6 +14,7 @@ class ApiBaseController extends CI_Controller{
     public function __construct(){
 
         parent::__construct();
+        session_start();
         $this->config->load('common/config_response', TRUE);
         $this->response_msg = $this->config->item('response', 'common/config_response');
 

@@ -19,7 +19,6 @@ class Test extends CI_Controller{
         }
 
         $this->load->helper('url');
-
         if (strpos($data['uri'], 'alipay') === 0 || strpos($data['uri'], 'wx-pay') === 0) {
             $uri = base_url($data['uri']);
         }
