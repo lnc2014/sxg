@@ -75,7 +75,7 @@ class api extends ApiBaseController{
      * 发送验证码接口
      */
     public function send_code(){
-        $mobile = intval($this->input->post("mobile"));
+        $mobile = $this->input->post("mobile");
         if(empty($mobile)){
             echo $this->apiReturn('0003', new stdClass(), $this->response_msg['0003']);
             exit();
@@ -88,4 +88,10 @@ class api extends ApiBaseController{
         echo $this->apiReturn('0000', $data, $this->response_msg['0000']);
     }
 
+    /**
+     * 增加用户的信息
+     */
+    public function add_repair_info(){
+        $name = intval($this->input->post("name"));
+    }
 }
