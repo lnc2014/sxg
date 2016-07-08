@@ -99,7 +99,31 @@ class api extends ApiBaseController{
      * 增加用户的信息
      */
     public function add_repair_info(){
-        $name = intval($this->input->post("name"));
+        $name = $this->input->post("name");
+        $repair_user_id = $this->input->post("repair_user_id");
+        $province = $this->input->post("province");
+        $city = $this->input->post("city");
+        $area = $this->input->post("area");
+        $street = $this->input->post("street");
+        $id_card_no = $this->input->post("id_card_no");
+        $id_card_pic = $this->input->post("id_card_pic");
+        $bank_num = $this->input->post("bank_num");
+        $bank_name = $this->input->post("bank_name");
+        $bank_address = $this->input->post("bank_address");
+        $bank_address = $this->input->post("bank_address");
+        $qualification_pic  = $this->input->post("qualification_pic");
+        $repair_bank  = $this->input->post("repair_bank");//字符串，多条
+
+        if(empty($name) || empty($id_card_no) || empty($qualification_pic)){
+            echo $this->apiReturn('0003', new stdClass(), $this->response_msg['0003']);
+            exit();
+        }
+        $data = array(
+        );
+        echo $this->apiReturn('0000', new stdClass(), $this->response_msg['0000']);
+        exit();
+//        $this->load->model('admin/sxg_repair_user');
+//        $check  = $this->sxg_admin->add($data);
     }
     public function check_code(){
         $mobile = $this->input->post("mobile");
