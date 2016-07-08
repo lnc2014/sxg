@@ -81,7 +81,14 @@ class api extends ApiBaseController{
             exit();
         }
         $code = rand(1000, 9999);
-        $_SESSION["code"] = $code;
+
+        $lifetime = 60;//保存1分钟
+        setcookie(session_name(),session_id(),time()+$lifetime,"/");
+        if(!isset( $_SESSION["{$mobile}code"])){
+            $_SESSION["{$mobile}code"] = $code;
+        }else{
+            $code = $_SESSION["{$mobile}code"];
+        }
         $data = array(
             'code' => $code
         );
@@ -93,5 +100,32 @@ class api extends ApiBaseController{
      */
     public function add_repair_info(){
         $name = intval($this->input->post("name"));
+    }
+    public function check_code(){
+        $mobile = $this->input->post("mobile");
+        $code = $this->input->post("code");
+        if(empty($mobile) || empty($code)){
+            echo $this->apiReturn('0003', new stdClass(), $this->response_msg['0003']);
+            exit();
+        }
+
+        if(!isset( $_SESSION["{$mobile}code"])){
+            echo $this->apiReturn('0012', new stdClass(), $this->response_msg['0012']);
+            exit();
+        }else{
+            $server_code = $_SESSION["{$mobile}code"];
+        }
+        if($server_code == $code){
+            echo $this->apiReturn('0000', new stdClass(), $this->response_msg['0000']);
+            exit();
+        }else{
+            echo $this->apiReturn('0012', new stdClass(), $this->response_msg['0012']);
+            exit();
+        }
+    }
+    //测试
+    public function test(){
+        var_dump($_SESSION);
+        echo json_encode('sss');
     }
 }
