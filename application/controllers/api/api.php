@@ -12,11 +12,11 @@ class api extends ApiBaseController{
      * 登录接口
      */
     public function login(){
-        $data = new stdClass();
+
         $mobile = intval($this->input->post("mobile"));
         $psw = $this->input->post("psw");
         if(empty($mobile) || empty($psw)){
-            echo $this->apiReturn('0003',$data, $this->response_msg['0003']);
+            echo $this->apiReturn('0003', new stdClass(), $this->response_msg['0003']);
             exit();
         }
         $this->load->model('admin/sxg_repair_user');
@@ -24,8 +24,12 @@ class api extends ApiBaseController{
             'mobile' => $mobile,
             'psw' => $psw
         ));
+        $data = array(
+            'user_id' => $repair_user['repair_user_id'],
+            'mobile' => $mobile,
+        );
         if(empty($repair_user)){
-            echo $this->apiReturn('0005', $data, $this->response_msg['0005']);
+            echo $this->apiReturn('0005', '', $this->response_msg['0005']);
             exit();
         }else{
             echo $this->apiReturn('0000', $data, $this->response_msg['0000']);
@@ -61,8 +65,12 @@ class api extends ApiBaseController{
                 'account' => $mobile,
                 'psw' => $psw
             ));
+            $data = array(
+                'user_id' => $id,
+                'mobile' => $mobile,
+            );
             if($id >0 ){
-                echo $this->apiReturn('0000', new stdClass(), $this->response_msg['0000']);
+                echo $this->apiReturn('0000', $data, $this->response_msg['0000']);
                 exit();
             }else{
                 echo $this->apiReturn('0002', new stdClass(), $this->response_msg['0002']);
@@ -110,7 +118,6 @@ class api extends ApiBaseController{
         $bank_num = $this->input->post("bank_num");
         $bank_name = $this->input->post("bank_name");
         $bank_address = $this->input->post("bank_address");
-        $bank_address = $this->input->post("bank_address");
         $qualification_pic  = $this->input->post("qualification_pic");
         $repair_bank  = $this->input->post("repair_bank");//字符串，多条
 
@@ -118,12 +125,45 @@ class api extends ApiBaseController{
             echo $this->apiReturn('0003', new stdClass(), $this->response_msg['0003']);
             exit();
         }
+        $this->load->model('admin/sxg_address');
+        $this->load->model('admin/sxg_repair_user');
+        $repair_address = $this->sxg_address->find_address_by_condition(array(
+            'repair_user_id' => $repair_user_id
+        ), 1);
+        $address_id = $repair_address['address_id'];
+        if(empty($repair_address)){
+            $add_adress = array(
+                'name' => $name,
+                'repair_user_id' => $repair_user_id,
+                'province' => $province,
+                'city' => $city,
+                'area' => $area,
+                'street' => $street
+            );
+            $address_id = $this->sxg_address->insert_data($add_adress);
+        }
         $data = array(
+            'address_id' => $address_id,
+            'user_name' => $name,
+            'bank_card_no' => $bank_num,
+            'bank_name' => $bank_name,
+            'bank_type' => $bank_address,
+            'id_card_pic' => $id_card_pic,
+            'id_card' => $id_card_no,
+            'qualification_pic' => $qualification_pic,
+            'good_print_band' => $repair_bank,
         );
-        echo $this->apiReturn('0000', new stdClass(), $this->response_msg['0000']);
-        exit();
-//        $this->load->model('admin/sxg_repair_user');
-//        $check  = $this->sxg_admin->add($data);
+        $update = $this->sxg_repair_user->update($data, array(
+            'repair_user_id' => $repair_user_id
+        ));
+        if($update){
+            echo $this->apiReturn('0000', new stdClass(), $this->response_msg['0000']);
+            exit();
+        }else{
+            echo $this->apiReturn('0002', new stdClass(), $this->response_msg['0002']);
+            exit();
+        }
+
     }
     public function check_code(){
         $mobile = $this->input->post("mobile");

@@ -47,6 +47,16 @@ class Sxg_repair_user extends BaseModel{
         return $this->db->insert_id();
     }
     /**
+     * 更新
+     *
+     * @param array $data   更新字段
+     * @param array $where  判定条件
+     */
+    public function update($data, $where)
+    {
+        return $this->db->update($this->_tablename, $data, $where);
+    }
+    /**
      * 找出所有的维修人员
      * @return mixed
      */
