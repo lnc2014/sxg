@@ -206,6 +206,26 @@ class api extends ApiBaseController{
         exit();
 
     }
+
+    /**
+     * 订单详情接口
+     */
+    public function order_detail(){
+        echo $this->apiReturn('0003', $data, $this->response_msg['0003']);
+        exit();
+    }
+
+    /**
+     * 调配件接口
+     */
+    public function repair_detail(){
+        echo $this->apiReturn('0003', $data, $this->response_msg['0003']);
+        exit();
+    }
+
+    /**
+     * 验证码检测
+     */
     public function check_code(){
         $mobile = $this->input->post("mobile");
         $code = $this->input->post("code");

@@ -25,8 +25,7 @@ class Admin extends BaseController{
     public function account(){
 
         $this->load->model('admin/sxg_admin');
-        $admins = $this->sxg_admin->findAdminByAdminId($_SESSION['admin_id']);
-
+        $admins = $this->sxg_admin->findAdminByAdminId($_SESSION['admin_id']); 
         $this->load->view('admin/account',array(
             'admins' => $admins
         ));
@@ -77,7 +76,6 @@ class Admin extends BaseController{
     /**
      * 删除子帐号
      */
-
     public function delete_account(){
         $admin_id = $this->uri->segment(4);//使用ci自带方法拿到admin_id
 
@@ -116,11 +114,24 @@ class Admin extends BaseController{
      * 增加子帐号
      */
     public function add_account(){
-
         if(!empty($_POST)){
             $admin_name = empty($_POST['admin_name'])?'':$_POST['admin_name'];
             $admin_psw = empty($_POST['admin_psw'])?'':$_POST['admin_psw'];
             $admin_group = empty($_POST['admin_group'])?array():$_POST['admin_group'];
+            if(empty($admin_name)){
+                echo "<script>
+                        alert('账号不能为空！');
+                         window.location.href= window.location.href;
+                      </script>";
+                exit;
+            }
+            if(empty($admin_psw)){
+                echo "<script>
+                        alert('账号密码不能为空！');
+                         window.location.href= window.location.href;
+                      </script>";
+                exit;
+            }
             $group = '';
             $count = count($admin_group);
             foreach($admin_group as $k=>$value){

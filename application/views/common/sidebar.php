@@ -63,7 +63,7 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
-                <li class="<?php if($controller == 'order'){echo 'active';}?>">
+                <li class="<?php if($second == 'order'){echo 'active';}?>">
                     <a href="<?php echo site_url('admin/order/index')?>">
                         <i class="menu-icon fa fa-caret-right"></i>
                         订单分配
@@ -72,16 +72,16 @@
                     <b class="arrow"></b>
                 </li>
 
-                <li class="<?php if($controller == 'repair'){echo 'active';}?>">
-                    <a href="<?php echo site_url('admin/order/order_')?>">
+                <li class="<?php if($second == 'order_assign'){echo 'active';}?>">
+                    <a href="<?php echo site_url('admin/order/order_assign')?>">
                         <i class="menu-icon fa fa-caret-right"></i>
                         订单查询
                     </a>
 
                     <b class="arrow"></b>
                 </li>
-                <li class="<?php if($controller == 'repair_check'){echo 'active';}?>">
-                    <a href="<?php echo site_url('admin/repair/repair_check')?>">
+                <li class="<?php if($second == 'send_invoice_list'){echo 'active';}?>">
+                    <a href="<?php echo site_url('admin/order/send_invoice_list')?>">
                         <i class="menu-icon fa fa-caret-right"></i>
                         发票配送
                     </a>
@@ -92,7 +92,7 @@
             </ul>
         </li>
 
-        <li class="<?php if($controller == 'user'){echo 'active';}?>">
+        <li class="<?php if($controller == 'user' || $controller == 'repair'){echo 'active';}?>">
             <a href="<?php echo site_url('admin/admin/user')?>" class="dropdown-toggle">
                 <i class="menu-icon fa fa-list"></i>
                 <span class="menu-text"> 用户管理 </span>
@@ -103,7 +103,7 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
-                <li class="<?php if($controller == 'user'){echo 'active';}?>">
+                <li class="<?php if($second == 'user'){echo 'active';}?>">
                     <a href="<?php echo site_url('admin/user/index')?>">
                         <i class="menu-icon fa fa-caret-right"></i>
                         用户管理
@@ -112,7 +112,7 @@
                     <b class="arrow"></b>
                 </li>
 
-                <li class="<?php if($controller == 'repair'){echo 'active';}?>">
+                <li class="<?php if($second == 'repair'){echo 'active';}?>">
                     <a href="<?php echo site_url('admin/repair/index')?>">
                         <i class="menu-icon fa fa-caret-right"></i>
                         维修员管理
@@ -120,7 +120,7 @@
 
                     <b class="arrow"></b>
                 </li>
-                <li class="<?php if($controller == 'repair_check'){echo 'active';}?>">
+                <li class="<?php if($second == 'repair_check'){echo 'active';}?>">
                     <a href="<?php echo site_url('admin/repair/repair_check')?>">
                         <i class="menu-icon fa fa-caret-right"></i>
                         维修员审核
@@ -128,7 +128,7 @@
 
                     <b class="arrow"></b>
                 </li>
-                <li class="<?php if($controller == 'user_feedback'){echo 'active';}?>">
+                <li class="<?php if($second == 'user_feedback'){echo 'active';}?>">
                     <a href="<?php echo site_url('admin/user/user_feedback')?>">
                         <i class="menu-icon fa fa-caret-right"></i>
                         用户投诉

@@ -11,7 +11,7 @@ $this->load->view('common/nav');
 
 <div class="main-container" id="main-container">
     <?php
-    $this->load->view('common/sidebar',array('controller'=>'user_feedback','second'=>'user'));
+    $this->load->view('common/sidebar',array('controller'=>'user','second'=>'user_feedback'));
     ?>
     <div class="main-content">
         <!-- #section:basics/content.breadcrumbs -->

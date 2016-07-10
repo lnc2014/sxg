@@ -16,11 +16,22 @@ class Order extends BaseController{
      */
 
     public function index(){
-
         $this->load->view('admin/order');
-
     }
 
+    /**
+     * 订单分配列表
+     */
+    public function order_assign(){
+        $this->load->view('admin/order_assign');
+    }
+
+    /**
+     * 发票配送列表
+     */
+    public function send_invoice_list(){
+        $this->load->view('admin/send_invoice_list');
+    }
     /**
      * 通过个人的UserID找到个人的订单
      */

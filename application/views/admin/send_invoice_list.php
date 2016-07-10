@@ -1,6 +1,6 @@
 <?php
 /**
- * Description：维修人审核页面
+ * Description：订单分配列表
  * Author: LNC
  * Date: 2016/4/24
  * Time: 17:04
@@ -11,7 +11,7 @@ $this->load->view('common/nav');
 
 <div class="main-container" id="main-container">
     <?php
-    $this->load->view('common/sidebar',array('controller'=>'repair','second'=>'repair_check'));
+    $this->load->view('common/sidebar',array('controller'=>'order','second'=>'send_invoice_list'));
     ?>
     <div class="main-content">
         <!-- #section:basics/content.breadcrumbs -->
@@ -22,7 +22,7 @@ $this->load->view('common/nav');
                     <i class="ace-icon fa fa-home home-icon"></i>
                     <a href="<?php echo site_url('admin/admin/index')?>">主页</a>
                 </li>
-                <li class="active">维修人员审核</li>
+                <li class="active">用户管理</li>
             </ul><!-- /.breadcrumb -->
 
         </div>
@@ -38,7 +38,7 @@ $this->load->view('common/nav');
 
                     <div class="widget-box">
                         <div class="widget-header widget-header-small">
-                            <h5 class="widget-title lighter">维修人员搜索</h5>
+                            <h5 class="widget-title lighter">用户搜索</h5>
                         </div>
 
                         <div class="widget-body">
@@ -46,15 +46,14 @@ $this->load->view('common/nav');
                                 <form class="form-search">
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-12">
-
-                                            <div class="input-group col-xs-6 inline">
-                                                <label class="col-lg-reset" for="user_name">申请人姓名</label>
-                                                <input type="text" class="input-small " id="user_name">&nbsp;
-                                                <input type="submit" class="btn btn-primary" value="搜索">
-                                                <label class="col-lg-reset" for="user_name">申请人手机号</label>
-                                                <input type="text" class="input-small " id="user_name">&nbsp;
-                                                <input type="submit" class="btn btn-primary" value="搜索">
-                                                <input type="submit" class="btn btn-primary" value="查看全部">
+                                            <div class="input-group col-xs-5 inline">
+                                                <label >分配方式</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <select class="input-large" >
+                                                    <option value="AL">手动分配</option>
+                                                    <option value="AK">随机分配</option>
+                                                </select>
+                                                &nbsp;
+                                                <input type="submit" class="btn btn-primary" value="确认">
                                             </div>
                                         </div>
                                     </div>
@@ -68,40 +67,15 @@ $this->load->view('common/nav');
                                     <thead>
                                     <tr>
                                         <th class="center">ID</th>
-                                        <th  class="center">申请人姓名</th>
-                                        <th  class="center">申请人手机号</th>
-                                        <th  class="center">申请时间</th>
-                                        <th  class="center">操作</th>
+                                        <th>订单号</th>
+                                        <th>下单时间</th>
+                                        <th class="hidden-480">上门地址</th>
+                                        <th class="hidden-480">订单类型</th>
+                                        <th class="hidden-480">是否为转单</th>
+                                        <th class="hidden-480">操作</th>
                                     </tr>
                                     </thead>
-
                                     <tbody>
-                                    <?php
-                                    foreach($repairs as $repair){?>
-                                        <tr>
-                                            <td class="center"><?php echo $repair['repair_user_id'] ?></td>
-                                            <td class="center"><?php echo $repair['user_name'] ?></td>
-                                            <td class="center"><?php echo $repair['mobile'] ?></td>
-                                            <td class="center"><?php echo date('Y-m-d H:i:s',time())?></td>
-                                            <td>
-                                                <div class="hidden-sm hidden-xs btn-group">
-                                                    <?php
-                                                    if($repair['status'] == 1){
-                                                        $repair_url = site_url("admin/user/frozen_user/{$repair['repair_user_id']}/0");
-                                                        echo '<a href="'.$repair_url.'" onclick="return confirm(\'确认冻结该账号吗？\')" class="btn btn-xs btn-danger">冻结该账户</a>';
-                                                    }else{
-                                                        $repair_url = site_url("admin/user/frozen_user/{$repair['repair_user_id']}/1");
-                                                        echo '<a href="'.$repair_url.'" onclick="return confirm(\'确认恢复该账号吗？\')" class="btn btn-xs btn-info">恢复该账户</a>';
-                                                    }?>
-
-                                                </div>
-
-
-                                            </td>
-                                        </tr>
-                                   <?php } ?>
-
-
                                     </tbody>
                                 </table>
                             </div><!-- /.span -->

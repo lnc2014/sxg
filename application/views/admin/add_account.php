@@ -12,7 +12,7 @@ $this->load->view('common/nav');
 
 <div class="main-container" id="main-container">
     <?php
-    $this->load->view('common/sidebar',array('controller'=>'account'));
+    $this->load->view('common/sidebar',array('controller'=>'account', 'second'=>''));
     ?>
     <div class="main-content">
         <!-- #section:basics/content.breadcrumbs -->
@@ -63,7 +63,7 @@ $this->load->view('common/nav');
 
 
                         <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">密码：</label>
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">权限：</label>
 
                                 <div class="col-sm-9">
                                     <div class="checkbox">
@@ -103,20 +103,14 @@ $this->load->view('common/nav');
                                 </button>
                             </div>
                         </div>
-
-
                     </form>
                 </div><!-- /.col -->
             </div>
         </div><!-- /.page-content -->
     </div><!-- /.main-content -->
-
-
     <?php
-
     $this->load->view('common/footer');
     ?>
-
 
     <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
         <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
