@@ -163,6 +163,47 @@ class api extends ApiBaseController{
             echo $this->apiReturn('0002', new stdClass(), $this->response_msg['0002']);
             exit();
         }
+    }
+
+    /**
+     * 我的订单接口
+     */
+    public function my_order(){
+        $status = $this->input->post("status");
+        $repair_user_id = $this->input->post("repair_user_id");
+        $status = empty($status)?'':$status;//状态默认为9全部  1,待接单2，待上门3,检测中4,调配件5,维修中6,待点评7,已结束8,已取消
+        if(empty($repair_user_id)){
+            echo $this->apiReturn('0003', new stdClass(), $this->response_msg['0003']);
+            exit();
+        }
+        $this->load->model('admin/sxg_order');
+        $this->load->model('admin/sxg_user');
+        $this->load->model('admin/sxg_address');
+        $orders = $this->sxg_order->get_orders_by_repair_user_id($repair_user_id, '*', $status);
+        $data = array();
+        foreach($orders as $k => $order){
+            $user = $this->sxg_order->get_one(array(
+                'user_id' => $order['user_id']
+            ),'user_name,mobile');
+            $data[$k]['user_name'] = empty($user['user_name'])?'':$user['user_name'];
+            $data[$k]['mobile'] = empty($user['mobile'])?'':$user['mobile'];
+
+            $address = $this->sxg_address->find_address_by_condition(array(
+                'address_id' => $order['address_id']
+            ), 1, 'province, city, area, street');
+            $data[$k]['address'] = $address['province'].$address['city'].$address['area'].$address['street'];
+            $visit = '';
+            if($order['visit_option'] == 1){//1为跟维修人员商定，2为指定时间,3为立即上
+                $visit = '维修人员商定';
+            }elseif($order['visit_option'] == 2){
+                $visit = $order['visit_time'];
+            }elseif($order['visit_option'] == 3){
+                $visit = '立即上门';
+            }
+            $data[$k]['visit_time'] = $visit;
+        }
+        echo $this->apiReturn('0003', $data, $this->response_msg['0003']);
+        exit();
 
     }
     public function check_code(){

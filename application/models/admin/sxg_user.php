@@ -25,6 +25,17 @@ class Sxg_user extends BaseModel{
         $result = $query->result_array();
         return $result;
     }
+    /**
+     * 找一条记录
+     * @return mixed
+     */
+    public function get_one($where, $field = '*'){
+        $this->db->select($field)->from($this->user_table);
+        $this->db->where($where);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        return $result;
+    }
 
 
     /**

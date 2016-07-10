@@ -36,21 +36,35 @@ class Sxg_order extends BaseModel{
      * @param $user_id
      * @return mixed
      */
-    public function findOrdersByCondition($condition = array(),$more = 1){
-
+    public function findOrdersByCondition($condition = array(), $more = 1){
         $this->db->select()->from($this->order_table)->where($condition);
         $query = $this->db->get();
-
         //是返回一条数据还是多条数据
         if($more == 1){
             $result = $query->row_array();
         }else{
             $result = $query->result_array();
         }
-
         return $result;
     }
 
+    /**
+     * 通过维修人员ID查找所有的订单
+     * @param $repair_user_id
+     * @param string $status
+     */
+    public function get_orders_by_repair_user_id($repair_user_id, $field = '*', $status = ''){
+
+        $this->db->select($field)->from($this->order_table);
+        $this->db->where('repair_user_id', $repair_user_id);
+        if(!empty($status)){
+            $this->db->where('status', $status);
+        }
+        $this->db->order_by('createtime DESC');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        return $result;
+    }
     /**
      * 结款
      */
