@@ -14,6 +14,12 @@ class Sxg_user extends BaseModel{
     private $user_feedback_table = 'sxg_user_feedback';
 
 
+    public function __construct()
+    {
+        $table_name = $this->user_table;
+        parent::__construct($table_name);
+    }
+
     /**
      * 找出所有的用户
      * @return mixed

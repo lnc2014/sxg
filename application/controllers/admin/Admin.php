@@ -25,7 +25,7 @@ class Admin extends BaseController{
     public function account(){
 
         $this->load->model('admin/sxg_admin');
-        $admins = $this->sxg_admin->findAdminByAdminId($_SESSION['admin_id']); 
+        $admins = $this->sxg_admin->findAdminByAdminId($_SESSION['admin_id']);
         $this->load->view('admin/account',array(
             'admins' => $admins
         ));

@@ -22,7 +22,7 @@ class BaseController extends CI_Controller{
         $this->admin_id = empty($_SESSION['admin_id'])?'':$_SESSION['admin_id'];
         $this->admin_sign = empty($_SESSION['sign'])?'':$_SESSION['sign'];
         if(!$this->check_login()){
-            redirect('admin/login');
+            redirect('/admin/login');
         }
     }
 
@@ -45,11 +45,9 @@ class BaseController extends CI_Controller{
             if($check){
                 //TODO 账号密码验证
                 return true;
-
             }else{
                 return false;
             }
-
         }
         return false;
     }

@@ -5,16 +5,17 @@
  * Date: 2016/6/2
  * Time: 22:58
  */
-
-class sxg_address extends CI_Model{
+include_once 'BaseModel.php';
+class sxg_address extends BaseModel{
 
     private $table_name = 'sxg_address';
 
     public function __construct()
     {
-        parent::__construct();
-        $this->load->database();
+        $table_name = $this->table_name;
+        parent::__construct($table_name);
     }
+
     /**
      * 添加订单
      */

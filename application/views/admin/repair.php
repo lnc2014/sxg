@@ -123,8 +123,6 @@ $this->load->view('common/nav');
                                                     }?>
 
                                                 </div>
-
-
                                             </td>
                                         </tr>
                                    <?php } ?>

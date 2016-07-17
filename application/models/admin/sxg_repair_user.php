@@ -11,51 +11,12 @@ class Sxg_repair_user extends BaseModel{
 
     private $repair_table = 'sxg_repair_user';
 
-    /**
-     * 查询单条用户记录
-     *
-     * @param array  $where
-     * @param string $fields
-     *
-     * PS : 可根据业务场景扩展
-     */
-    public function get_one($where, $fields='*')
+    public function __construct()
     {
-        return $this->db->select($fields)->where($where)->get($this->repair_table)->row_array();
+        $table_name = $this->repair_table;
+        parent::__construct($table_name);
     }
 
-    /**
-     * 查询多条用户记录
-     * @param array  $where
-     * @param string $fields
-     */
-    public function get_list($where, $fields='*')
-    {
-        return $this->db->select($fields)->where($where)->get($this->repair_table)->result_array();
-    }
-
-    /**
-     * 新增
-     *
-     * @param array $data	更新字段
-     *
-     * @return int $res     返回成功插入记录对应的ID
-     */
-    public function add($data)
-    {
-        $this->db->insert($this->repair_table, $data);
-        return $this->db->insert_id();
-    }
-    /**
-     * 更新
-     *
-     * @param array $data   更新字段
-     * @param array $where  判定条件
-     */
-    public function update($data, $where)
-    {
-        return $this->db->update($this->_tablename, $data, $where);
-    }
     /**
      * 找出所有的维修人员
      * @return mixed

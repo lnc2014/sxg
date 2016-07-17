@@ -11,6 +11,11 @@ class Sxg_order extends BaseModel{
 
     private $order_table = 'sxg_order';
 
+    public function __construct()
+    {
+        $table_name = $this->order_table;
+        parent::__construct($table_name);
+    }
 
     /**
  *

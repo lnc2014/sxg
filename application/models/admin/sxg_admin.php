@@ -13,6 +13,11 @@ class Sxg_admin extends BaseModel{
     private $admin_table = 'sxg_admin';
     private $admin_group_table = 'sxg_admin_group';
 
+    public function __construct()
+    {
+        $table_name = $this->admin_table;
+        parent::__construct($table_name);
+    }
 
     /**
      * 通过子帐号ID找到该账号所有的子帐号

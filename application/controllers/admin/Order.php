@@ -10,13 +10,50 @@ include_once 'BaseController.php';
 
 class Order extends BaseController{
 
-
     /**
      * 订单中心
      */
-
     public function index(){
-        $this->load->view('admin/order');
+        $this->load->model('admin/sxg_order');
+        $this->load->model('admin/sxg_address');
+        $repair_assign = $this->input->get("repair_assign");//分配维修人员方式
+        $page = empty($this->input->get("page"))?0:$this->input->get("page");//页数
+        $where = array(
+            'status' => 1
+        );
+        if(!empty($repair_assign)){
+            $where = array(
+                'status' => 1,
+                'repair_assign' => $repair_assign,
+            );
+        }
+        $page_size = 10;//每页十条记录
+        if(empty($page) || $page == 1){
+            $page = 1;
+            $limit = $page_size;
+            $offset = 0;
+        }else{
+            $limit = $page_size;
+            $offset =  ($page-1)*$page_size;
+        }
+        $orders = $this->sxg_order->get_list($where, '*', $limit, $offset); //找出所有的订单
+        $order_count = $this->sxg_order->get_list($where); //找出所有的订单
+        $order_count = count($order_count);
+        $order_count  = ceil($order_count/$page_size);
+        foreach($orders as $k => $order){
+            $orders[$k]['address'] = '';
+            $address_info = $this->sxg_address->get_one(array(
+                'address_id' => $order['address_id']
+            )); //找出所有的订单
+            if(!empty($address_info)){
+                $orders[$k]['address'] = $address_info['province'].$address_info['city'].$address_info['area'].$address_info['street'];
+            }
+        }
+        $this->load->view('admin/order',array(
+            'orders' => $orders,
+            'pages' => $order_count,
+            'page' => $page,
+        ));
     }
 
     /**
@@ -36,9 +73,7 @@ class Order extends BaseController{
      * 通过个人的UserID找到个人的订单
      */
     public function user_order(){
-
         $user_id = $this->uri->segment(4);//使用ci自带方法拿到user_id
-
         if(empty($user_id)){
             $this->load->view('errors/error',array('code'=>500,'msg'=>'用户ID不能为空'));
         }else{
@@ -50,8 +85,6 @@ class Order extends BaseController{
                 'orders' => $orders
             ));
         }
-
-
     }
 
     /**
@@ -65,15 +98,11 @@ class Order extends BaseController{
             $this->load->view('errors/error', array('code' => 500, 'msg' => '订单编号不能为空！'));
         }else{
             $this->load->model('admin/sxg_order');
-
             $order = $this->sxg_order->findOrdersByCondition(array('id'=>$order_id),1);
-
             $this->load->view('admin/order_detail',array(
                 'order' => $order
             ));
         }
-
-
     }
     /**
      * 结款

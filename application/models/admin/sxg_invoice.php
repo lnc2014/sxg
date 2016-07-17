@@ -11,7 +11,11 @@ class Sxg_invoice extends BaseModel{
 
     private $invoice_table = 'sxg_invoice';
 
-
+    public function __construct()
+    {
+        $table_name = $this->invoice_table;
+        parent::__construct($table_name);
+    }
     /**
  *
  * 通过UserId找到个人的发票信息
