@@ -154,7 +154,8 @@ class Order extends BaseController{
         if(!empty($order['repair_pic'])){
             $pics = explode(';', $order['repair_pic']);
             foreach($pics as $value){
-                $pic[] = 'http://'.$_SERVER['HTTP_HOST'].'/'.$value;
+//                $pic[] = 'http://'.$_SERVER['HTTP_HOST'].'/'.$value;
+                $pic[] = 'http://sxg.lnctime.com/'.$value;
             }
             $data['pics'] = $pic;
         }
