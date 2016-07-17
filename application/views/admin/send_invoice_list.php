@@ -38,29 +38,44 @@ $this->load->view('common/nav');
 
                     <div class="widget-box">
                         <div class="widget-header widget-header-small">
-                            <h5 class="widget-title lighter">用户搜索</h5>
+                            <h5 class="widget-title lighter">订单搜索</h5>
                         </div>
-
                         <div class="widget-body">
                             <div class="widget-main">
                                 <form class="form-search">
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-12">
                                             <div class="input-group col-xs-5 inline">
-                                                <label >分配方式</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                <select class="input-large" >
-                                                    <option value="AL">手动分配</option>
-                                                    <option value="AK">随机分配</option>
-                                                </select>
-                                                &nbsp;
-                                                <input type="submit" class="btn btn-primary" value="确认">
+                                                <label class="col-lg-reset" for="user_name">申请人账号（手机号）</label>
+                                                <input type="text" class="input-large " id="user_name">&nbsp;
+                                                <input type="submit" class="btn btn-primary" value="搜索">
                                             </div>
+                                            <div class="input-group col-xs-5 inline">
+                                                <label class="col-lg-reset" for="user_name">快递单号</label>
+                                                <input type="text" class="input-large " id="user_name">&nbsp;
+                                                <input type="submit" class="btn btn-primary" value="搜索">
+                                            </div>
+                                            <div class="space-6"></div><div class="space-6"></div>
+                                            <div class="input-group col-xs-2 inline">
+                                                <label>状态</label>
+                                                <select >
+                                                    <option value="AL">已配送</option>
+                                                    <option value="AL">未配送</option>
+                                                </select>
+                                            </div>
+                                            <div class="input-group col-xs-2 inline">
+                                                <label>配送方式</label>
+                                                <select >
+                                                    <option value="AL">快递</option>
+                                                    <option value="AK">人工</option>
+                                                </select>
+                                            </div>
+                                            <div class="space-6"></div>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="col-xs-12">
                                 <table id="sample-table-1" class="table table-striped table-bordered table-hover">

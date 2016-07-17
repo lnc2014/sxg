@@ -77,14 +77,14 @@ $this->load->view('common/nav');
                                     <?php foreach($orders as $order){?>
                                         <tr>
                                             <td class="center"><?php echo $order['id']; ?></td>
-                                            <td class="center"><?php echo $order['order_no']; ?></td>
+                                            <td class="center"><a onclick="order_detail(<?php echo $order['id']; ?>)"><?php echo $order['order_no']; ?></a></td>
                                             <td class="hidden-480 center"><?php echo date("Y-m-d H:i:s", $order['createtime']); ?></td>
                                             <td><?php echo $order['address']; ?></td>
                                             <td class="hidden-480"><?php if($order['visit_option'] == 3) echo '立即上门';else echo '预约上门'; ?></td>
                                             <td class="hidden-480"><?php if($order['is_transfer'] == 1) echo '转单';else echo '不转单'; ?></td>
                                             <td class="hidden-480">
                                                 <div class="hidden-sm hidden-xs btn-group">
-                                                    <a href="#" onclick="" class="btn btn-xs btn-info">分配</a>
+                                                    <a href="/index.php/admin/order/order_offer?order_id=<?php echo $order['id'];?>" onclick="" class="btn btn-xs btn-info">分配</a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -118,10 +118,82 @@ $this->load->view('common/nav');
 
         </div><!-- /.page-content -->
     </div><!-- /.main-content -->
-    <?php
+    <style>
+        .ui-widget-overlay {
+            background: rgba(0,0,0,0.25);
+            opacity: 1 !important;
+            filter: alpha(opacity=100) !important;
+            z-index: 1040 !important;
+        }
+        .ui-widget-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .ui-dialog .ui-dialog-buttonpane {
+            text-align: left;
+            border-width: 1px 0 0 0;
+            background-image: none;
+            margin-top: .5em;
+            padding: .3em 1em .5em .4em;
+        }
+    </style>
+    <div class="ui-widget-overlay ui-front" style="display: none" id="all_hidden"></div>
+    <div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-dialog-buttons ui-draggable ui-resizable" id="order_detail"
+         style="position: absolute; display: none; height: auto; width: 500px; top: 100px; left: 600px;" id="show_detail">
+        <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
+                <div class="widget-header widget-header-small">
+                    <h4 class="smaller">
+                        <i class="ace-icon fa fa-check"></i>订单详情
+                    </h4>
+                </div>
+        </div>
+        <div class="ui-dialog-content ui-widget-content" style="width: auto; min-height: 28px; max-height: none; height: auto;">
+            <div style="margin: 15px 15px 15px 15px">
+            <span style="font-size: 14px" >
+                 机器品牌:&nbsp;&nbsp;<b id="band">爱普生</b>
+             </span>
+              <span style="font-size: 14px" >
+                 机器型号:&nbsp;&nbsp;<b id="model">爱普生</b>
+             </span>
+                <br><br>
+            <span style="font-size: 14px" >
+                 问题描述:&nbsp;&nbsp;<b id="problem">爱普生</b>
+            </span>
+                <br>
+            <span>
+                <div id="pics">
+
+                </div>
+
+            </span><br><br>
+              <span style="font-size: 14px">
+                 上门时间:&nbsp;&nbsp;<b id="time">爱普生</b>
+             </span>
+                <br><br>
+             <span style="font-size: 14px">
+                 报修人:&nbsp;&nbsp;<b id="name">爱普生</b>
+             </span>
+             <span style="font-size: 14px">
+                 联系电话:&nbsp;&nbsp;<b id="phone">爱普生</b>
+             </span>
+                <br><br>
+              <span style="font-size: 14px">
+                 上门地址:&nbsp;&nbsp;<b id="address">爱普生</b>
+             </span>
+            </div>
+            <div class="hr hr-12 hr-double"></div>
+        </div>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <div class="ui-dialog-buttonset">
+                    <span class="btn btn-primary" onclick="hidden_order_detail()" ">确认</span>
+            </div>
+        </div>
+    </div><?php
     $this->load->view('common/footer');
     ?>
-
     <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
         <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
     </a>
@@ -133,5 +205,45 @@ $this->load->view('common/footer_js');
  function search(){
      var repair_assign = $('#repair_assign').val();
      window.location.href = '/index.php/admin/order/index?page=<?php echo $page?>&repair_assign='+repair_assign;
+ }
+
+function order_detail(order_id){
+        $.ajax({
+            type: "POST",
+            url: "/index.php/admin/order/get_order_detail",
+            data: {
+                order_id: order_id
+            },
+            dataType: "json",
+            success: function(json){
+                if(json.result ==  '0000'){
+                    var data = json.data;
+                    $("#band").text(data.band);
+                    $("#model").text(data.model);
+                    $("#problem").text(data.problem);
+                    $("#time").text(data.time);
+                    $("#name").text(data.name);
+                    $("#phone").text(data.phone);
+                    $("#address").text(data.address);
+                    $.each(data.pics, function(item, value){
+                        var html = '<img src="'+value+'" width="150px" height="300px">';
+                        $('#pics').append(html);
+                    });
+                    $("#all_hidden").css('display','block');
+                    $("#order_detail").css('display','block');
+                }else {
+                    alert(json.info);
+                }
+            },
+            error: function(){
+                alert('加载失败');
+            }
+        });
+
+}
+ function hidden_order_detail(){
+     $("#all_hidden").css('display','none');
+     $("#order_detail").css('display','none');
+     $('#pics').html('');
  }
 </script>

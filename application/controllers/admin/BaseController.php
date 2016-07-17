@@ -52,5 +52,17 @@ class BaseController extends CI_Controller{
         return false;
     }
 
-
+    /**
+     * 接口api统一结果处理
+     * @param $result
+     * @param $data
+     * @param $info
+     * @return string
+     */
+    public function api_return($result, $data, $info) {
+        $arr["result"] = $result;
+        $arr["data"] = $data === null ? '' : $data;
+        $arr["info"] = $info;
+        return json_encode($arr);
+    }
 }

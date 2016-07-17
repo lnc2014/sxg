@@ -81,4 +81,20 @@ class Sxg_order extends BaseModel{
         return $this->db->update($this->order_table, $data);
     }
 
+    /**
+     * 通过订单ＩＤ获得订单详情
+     * @param $order_id
+     * @param string $field
+     * @return mixed
+     */
+    public function get_order_detail($order_id, $field = '*'){
+        $this->db->select($field)->from('sxg_order AS o , sxg_user AS u ,sxg_address AS a ');
+        $this->db->where('o.`id`', $order_id);
+        $this->db->where('o.`user_id` = u.`user_id`');
+        $this->db->where(' a.`address_id` = o.`address_id`');
+        $query = $this->db->get();
+        $result = $query->row_array();
+        return $result;
+    }
+
 }

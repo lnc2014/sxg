@@ -64,6 +64,17 @@ class Order extends BaseController{
     }
 
     /**
+     * 派单
+     */
+    public function order_offer(){
+        $order_id = $this->input->get("order_id");//分配维修人员方式
+        if(empty($order_id)){
+            $this->load->view('errors/error', array('code' => 500, 'msg' => '订单编号不能为空！'));
+        }else{
+            $this->load->view('admin/order_offer');
+        }
+    }
+    /**
      * 发票配送列表
      */
     public function send_invoice_list(){
@@ -78,9 +89,7 @@ class Order extends BaseController{
             $this->load->view('errors/error',array('code'=>500,'msg'=>'用户ID不能为空'));
         }else{
             $this->load->model('admin/sxg_order');
-
             $orders = $this->sxg_order->findOrdersByUserId($user_id);
-
             $this->load->view('admin/user_order',array(
                 'orders' => $orders
             ));
@@ -91,7 +100,6 @@ class Order extends BaseController{
      * 订单详情
      */
     public function order_detail(){
-
         $order_id = $this->uri->segment(4);//使用ci自带方法拿到order_id
         if(empty($order_id)) {
             //跳转到错误页面
@@ -103,6 +111,55 @@ class Order extends BaseController{
                 'order' => $order
             ));
         }
+    }
+
+    /**
+     * 订单详情接口
+     */
+    public function get_order_detail(){
+        $order_id = $this->input->post("order_id");
+        if(empty($order_id)){
+            echo $this->api_return('0003', new stdClass(), '订单ID不能空！');
+            return;
+        }
+        $this->load->model('admin/sxg_order');
+        $order = $this->sxg_order->get_order_detail($order_id);
+
+        $data['band'] = $order['print_band'];
+        $data['model'] = $order['print_model'];
+        $data['problem'] = '';
+        //维修内容特殊处理0001加粉（加墨）;0002打印质量差（需要拍照上传质量差页）;0003不能开机;0004卡纸
+        if(is_numeric(strpos($order['repair_option'],'0001'))){
+            $data['problem'] = $data['problem'].';加粉（加墨）';
+        }
+        if(is_numeric(strpos($order['repair_option'],'0002'))){
+            $data['problem'] = $data['problem'].';打印质量差（需要拍照上传质量差页）';
+        }
+        if(is_numeric(strpos($order['repair_option'],'0003'))){
+            $data['problem'] = $data['problem'].';不能开机';
+        }
+        if(is_numeric(strpos($order['repair_option'],'0004'))){
+            $data['problem'] = $data['problem'].';卡纸';
+        }
+        $data['problem'] = trim($data['problem'], ';').';'.$order['repair_problem'];
+        $data['time'] =  $order['visit_option'];
+        if($order['visit_option'] == 2){
+            $data['time'] =  date('m月d日 H时i分s秒', $order['visit_time']);
+        }
+        $data['name'] = $order['user_name'];
+        $data['phone'] = $order['mobile'];
+        $data['address'] = $order['province'].$order['city'].$order['area'].$order['street'];
+        $pic = array();
+        $data['pics'] = $pic;
+        if(!empty($order['repair_pic'])){
+            $pics = explode(';', $order['repair_pic']);
+            foreach($pics as $value){
+                $pic[] = 'http://'.$_SERVER['HTTP_HOST'].'/'.$value;
+            }
+            $data['pics'] = $pic;
+        }
+        echo $this->api_return('0000', $data, 'success！');
+        return;
     }
     /**
      * 结款
