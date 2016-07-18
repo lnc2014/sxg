@@ -5,7 +5,7 @@
  * Date: 2016/5/30
  * Time: 23:06
  */
-$this->load->view('common/header',array('title'=>$title));
+$this->load->view('common/wx_header',array('title'=>$title));
 ?>
 <!--1,待接单2，待上门3,检测中4,调配件5,维修中6,待点评7,已结束8,已取消-->
 <div class="container">
@@ -37,7 +37,7 @@ $this->load->view('common/header',array('title'=>$title));
         ?>
     </div>
 </div>
-<script type="text/javascript" src="/static/js/zepto.min.js"></script>
+<script type="text/javascript" src="/static/wx/js/zepto.min.js"></script>
 <script type="text/javascript">
     $(".com_cur_status").on("click",function(){
         var so = $(".com_status_options");

@@ -5,9 +5,7 @@
  * Date: 2016/5/30
  * Time: 23:06
  */
-$this->load->view('common/header',array('title'=>$title));
-$base_js_url = $this->config->item('js_url');
-$base_img_url = $this->config->item('img_url');
+$this->load->view('common/wx_header',array('title'=>$title));
 ?>
 <body>
 <div class="container">
@@ -19,7 +17,7 @@ $base_img_url = $this->config->item('img_url');
         <button class="btn btn_l" type="button">提 交</button>
     </div>
 </div>
-<script type="text/javascript" src="<?php echo $base_js_url ?>zepto.min.js"></script>
+<script type="text/javascript" src="/static/wx/js/zepto.min.js"></script>
 <script type="text/javascript">
      $(".btn").click(function(){
          var feedback = $("#feedback").val();

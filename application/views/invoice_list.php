@@ -5,7 +5,7 @@
  * Date: 2016/5/30
  * Time: 23:06
  */
-$this->load->view('common/header',array('title'=>$title));
+$this->load->view('common/wx_header',array('title'=>$title));
 ?>
 
 <div class="container">
@@ -25,7 +25,7 @@ $this->load->view('common/header',array('title'=>$title));
                                 echo '已开票(配送中)';
                             }elseif($val['status'] == 3){
                                 echo '已完成';
-                            } ?></span><img src="/static/images/icon-arrow.png" class="arror_r" ></div>
+                            } ?></span><img src="/static/wx/images/icon-arrow.png" class="arror_r" ></div>
                 </div>
             </a>
                 <?php } ?>

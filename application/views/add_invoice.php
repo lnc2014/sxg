@@ -5,17 +5,17 @@
  * Date: 2016/5/30
  * Time: 23:06
  */
-$this->load->view('common/header',array('title'=>$title));
+$this->load->view('common/wx_header',array('title'=>$title));
 ?>
 <style>
     .checked{
-        background: url(/static/images/checked.png) no-repeat;
+        background: url(/static/wx/images/checked.png) no-repeat;
         background-size: 100% 100%;
     }
     .unchecked{
         margin-right: -0.3em;
         margin-top: -0.1em;
-        background: url(/static/images/unchecked.png) no-repeat;
+        background: url(/static/wx/images/unchecked.png) no-repeat;
         background-size: 100% 100%;
     }
 </style>
@@ -46,7 +46,7 @@ $this->load->view('common/header',array('title'=>$title));
         <a href="/index.php/sxg/add_invoice_next" id="next_url"><button type="button" id="next" class="btn full_height btn_next">下一步</button></a>
     </div>
 </div>
-<script type="text/javascript" src="/static/js/zepto.min.js"></script>
+<script type="text/javascript" src="/static/wx/js/zepto.min.js"></script>
 <script>
     var all_repair_money = 0;
     $(function(){

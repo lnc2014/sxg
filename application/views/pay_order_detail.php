@@ -5,7 +5,7 @@
  * Date: 2016/5/30
  * Time: 23:06
  */
-$this->load->view('common/header',array('title'=>$title));
+$this->load->view('common/wx_header',array('title'=>$title));
 
 ?>
 <div class="container">
@@ -27,7 +27,7 @@ $this->load->view('common/header',array('title'=>$title));
         <div class="repair_group div_repair_price">
             <div class="d_row repair_price">
                 维修费用：<span class="color_price">¥60</span>
-                <img src="/static/images/icon-arrow.png" class="float_right arror_r" >
+                <img src="/static/wx/images/icon-arrow.png" class="float_right arror_r" >
             </div>
         </div>
         <div class="repair_group div_repair_project hide">
@@ -92,7 +92,7 @@ $this->load->view('common/header',array('title'=>$title));
         <a href="javascript:;" onclick="jspay()"><button class="btn btn_xl" type="button">维修结束并支付</button></a>
     </div>
 </div>
-<script type="text/javascript" src="/static/js/zepto.min.js"></script>
+<script type="text/javascript" src="/static/wx/js/zepto.min.js"></script>
 <script type="text/javascript">
     $(".repair_price").on("click",function(){
         var rep = $(".div_repair_project");

@@ -6,7 +6,6 @@
  * Time: 23:06
  */
 $this->load->view('common/wx_header',array('title'=>$title));
-$base_js_url = $this->config->item('js_url');
 ?>
 
 <body>

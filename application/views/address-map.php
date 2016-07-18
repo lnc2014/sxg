@@ -5,9 +5,7 @@
  * Date: 2016/5/30
  * Time: 23:06
  */
-$this->load->view('common/header',array('title'=>$title));
-$base_js_url = $this->config->item('js_url');
-$base_img_url = $this->config->item('img_url');
+$this->load->view('common/wx_header',array('title'=>$title));
 ?>
 <body>
 <div class="container">
@@ -15,7 +13,7 @@ $base_img_url = $this->config->item('img_url');
         <input type="text" class="input_search" placeholder="搜索地名"><span class="btn_cancel">取消</span>
     </div>
     <div class="div_map border_bottom">
-        <img src="<?php echo $base_img_url?>map.png" class="full_width">
+        <img src="/static/wx/images/map.png" class="full_width">
     </div>
     <div class="div_sel_addrs">
         <div class="addr_r middle_box border_bottom">
@@ -35,7 +33,7 @@ $base_img_url = $this->config->item('img_url');
         </div>
     </div>
 </div>
-<script type="text/javascript" src="<?php echo $base_js_url ?>zepto.min.js"></script>
+<script type="text/javascript" src="/static/wx/js/zepto.min.js"></script>
 <script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp"></script>
 <script type="text/javascript">
     $(function(){

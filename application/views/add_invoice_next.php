@@ -5,7 +5,7 @@
  * Date: 2016/5/30
  * Time: 23:06
  */
-$this->load->view('common/header',array('title'=>$title));
+$this->load->view('common/wx_header',array('title'=>$title));
 ?>
 
 <div class="container">
@@ -44,7 +44,7 @@ $this->load->view('common/header',array('title'=>$title));
         <button class="btn btn_l" type="button" id="submit">提 交</button>
     </div>
 </div>
-<script type="text/javascript" src="/static/js/zepto.min.js"></script>
+<script type="text/javascript" src="/static/wx/js/zepto.min.js"></script>
 <script>
     $(function(){
         $('#submit').click(function(){

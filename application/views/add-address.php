@@ -5,7 +5,7 @@
  * Date: 2016/5/30
  * Time: 23:06
  */
-$this->load->view('common/header',array('title'=>$title));
+$this->load->view('common/wx_header',array('title'=>$title));
 $base_js_url = $this->config->item('js_url');
 $base_img_url = $this->config->item('img_url');
 ?>
@@ -13,13 +13,13 @@ $base_img_url = $this->config->item('img_url');
 /*    input[type='radio'] { margin-right: 0.3em; margin-top: -0.1em; background: url(*/<?php //echo $base_img_url?>/*radio.png) no-repeat; background-size: 100% 100%; }*/
 /*    input[type='radio']:checked { background: url(*/<?php //echo $base_img_url?>/*radio_checked.png) no-repeat; background-size: 100% 100%; }*/
     .test{
-        background: url(/static/images/radio_checked.png) no-repeat;
+        background: url(/static/wx/images/radio_checked.png) no-repeat;
         background-size: 100% 100%;
     }
     .test2{
         margin-right: 0.3em;
         margin-top: -0.1em;
-        background: url(/static/images/radio.png) no-repeat;
+        background: url(/static/wx/images/radio.png) no-repeat;
         background-size: 100% 100%;
     }
 
@@ -66,11 +66,11 @@ $base_img_url = $this->config->item('img_url');
     <input type="hidden" id="is_woman" value="0">
     <input type="hidden" id="is_default" value="0">
 </div>
-<script type="text/javascript" src="<?php echo $base_js_url ?>zepto.min.js"></script>
-<script type="text/javascript" src="<?php echo $base_js_url ?>citySelect.js"></script>
+<script type="text/javascript" src="/static/wx/js/zepto.min.js"></script>
+<script type="text/javascript" src="/static/wx/js/citySelect.js"></script>
 <script type="text/javascript">
     $(function(){
-        $(".addr_city").citySelect({ url:'/static/js/city.json', prov:'', city:'', dist:'', required:false, nodata:'none' });
+        $(".addr_city").citySelect({ url:'/static/wx/js/city.json', prov:'', city:'', dist:'', required:false, nodata:'none' });
     });
     $(function(){
         $("#man").click(function () {

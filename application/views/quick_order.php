@@ -5,21 +5,19 @@
  * Date: 2016/5/30
  * Time: 23:06
  */
-$this->load->view('common/header',array('title'=>$title));
-$base_js_url = $this->config->item('js_url');
-$base_img_url = $this->config->item('img_url');
+$this->load->view('common/wx_header',array('title'=>$title));
 ?>
 <style>
-    input[type='checkbox'] { margin-right: -0.3em; margin-top: -0.1em; background: url(<?php echo $base_img_url?>unchecked.png) no-repeat; background-size: 100% 100%; }
-    input[type='checkbox']:checked { background: url(<?php echo $base_img_url?>checked.png) no-repeat; background-size: 100% 100%; }
+    input[type='checkbox'] { margin-right: -0.3em; margin-top: -0.1em; background: url(/static/wx/images/unchecked.png) no-repeat; background-size: 100% 100%; }
+    input[type='checkbox']:checked { background: url(/static/wx/images/checked.png) no-repeat; background-size: 100% 100%; }
 
     .div_images .img_li.add_li {
-        background: url(/static/images/add.png) no-repeat;
+        background: url(/static/wx/images/add.png) no-repeat;
         background-size: 100% 100%;
     }
 </style>
 <!--引入wenupload CSS-->
-<link rel="stylesheet" type="text/css" href="/static/webupload/webuploader.css">
+<link rel="stylesheet" type="text/css" href="/static/wx/webupload/webuploader.css">
 <body>
 <div class="container cw">
     <div class="select_row border_bottom">
@@ -84,9 +82,9 @@ $base_img_url = $this->config->item('img_url');
         <button class="btn btn_l" type="button" id="submit_order">下一步</button>
     </div>
 </div>
-<script type="text/javascript" src="/static/js/zepto.min.js"></script>
-<script type="text/javascript" src="/static/js/jquery.1.71.js"></script>
-<script type="text/javascript" src="/static/webupload/webuploader.js"></script>
+<script type="text/javascript" src="/static/wx/js/zepto.min.js"></script>
+<script type="text/javascript" src="/static/wx/js/jquery.1.71.js"></script>
+<script type="text/javascript" src="/static/wx/webupload/webuploader.js"></script>
 <script type="text/javascript">
     var i = 1;
     $(".repair_devices").on("click",'.device',function(){
