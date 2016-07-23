@@ -154,6 +154,7 @@ $this->load->view('common/wx_header',array('title'=>$title));
                 dataType: "json",
                 success: function(json){
                     if(json.result == '0000'){
+                        alert('恭喜你下单成功！');
                         window.location = '/index.php/sxg/my_order_list';
                     }else {
                         alert(json.info);

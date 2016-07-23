@@ -7,8 +7,8 @@ require_once "lib/WxPayJsApiPay.class.php";
 class WxOpenIdHelper{
     function getOpenId(){
         $tools = new JsApiPay();
-        $openid = $tools->GetOpenid();
-        return $openid;
+        $data  = $tools->GetOpenid();
+        return $data;
     }
 }
 

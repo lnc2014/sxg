@@ -21,19 +21,19 @@ $this->load->view('common/wx_header',array('title'=>$title));
         <div class="option <?php if($status_info == '已取消'){echo 'selected';} ?>" onclick="location.href='/index.php/sxg/my_order_list/8'">已取消</div>
     </div>
     <div class="com_cur_status">
-        <span class="color_base"><?php echo $status_info?></span><i></i>
+        <span class="color_base"><?php echo $status_info; ?></span><i></i>
     </div>
     <div class="com_order_list">
         <?php
-            foreach($order as $val){?>
+        foreach($order as $val){ ?>
                 <div class="com_order">
-                    <div class="color_orange com_s_title"><?php echo $val['status']?></div>
-                    <div class="color_base com_s_date">下单时间：<?php echo $val['status']?></div>
+                    <div class="color_orange com_s_title"><?php echo $val['status'];?></div>
+                    <div class="color_base com_s_date">下单时间：<?php echo$val['createtime'];?></div>
                     <div class="com_button">
-                        <button type="button" class="btn btn_half" onclick="order_detail(<?php echo $val['order_id']?>)"><?php if($val['status'] == '待接单' || $val['status'] == '待上门'){echo '取消订单';}elseif($val['status'] == '维修中' || $val['status'] == '调配件'|| $val['status'] == '检测中'){echo '维修结束并支付';}elseif($val['status'] == '待点评' || $val['status'] == '已结束'){echo '我要点评';}else{echo '已取消';}?></button><a href="/index.php/sxg/add_feedback"><button type="button" class="btn btn_half bg_orange">投 诉</button></a>
+                        <button type="button" class="btn btn_half" onclick="order_detail(<?php echo $val['order_id'];?>)"><?php if($val['status'] == '待接单' || $val['status'] == '待上门'){echo '取消订单';}elseif($val['status'] == '维修中' || $val['status'] == '调配件'|| $val['status'] == '检测中'){echo '维修结束并支付';}elseif($val['status'] == '待点评' || $val['status'] == '已结束'){echo '我要点评';}else{echo '已取消';}?></button><a href="/index.php/sxg/add_feedback"><button type="button" class="btn btn_half bg_orange">投 诉</button></a>
                     </div>
                 </div>
-            <?}
+            <?php }
         ?>
     </div>
 </div>

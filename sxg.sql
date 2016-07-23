@@ -174,8 +174,8 @@ CREATE TABLE `sxg_repair_user` (
   `qualification_pic` varchar(50) DEFAULT NULL COMMENT '资历证明图片',
   `good_print_band` varchar(100) DEFAULT '' COMMENT '擅长维修的品牌',
   `good_print_type` varchar(100) DEFAULT '' COMMENT '擅长维修的型号',
-  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  `create_time` int(11) DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) DEFAULT '0' COMMENT '修改时间',
   `status` tinyint(4) DEFAULT NULL COMMENT '维修人员状态，1为正常，2为待审核，0为冻结',
   `flag` tinyint(4) DEFAULT '1' COMMENT '标识，1为有效，0为无效',
   PRIMARY KEY (`repair_user_id`),
@@ -184,19 +184,19 @@ CREATE TABLE `sxg_repair_user` (
 
 /*Data for the table `sxg_repair_user` */
 
-insert  into `sxg_repair_user`(`repair_user_id`,`account`,`psw`,`mobile`,`address_id`,`id_card`,`repair_num`,`user_name`,`score`,`commission`,`order_num`,`trans_num`,`bank_card_no`,`bank_name`,`bank_type`,`id_card_pic`,`qualification_pic`,`good_print_band`,`good_print_type`,`create_time`,`update_time`,`status`,`flag`) values (1,'1','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2016-05-09 23:46:56',NULL,NULL,1),(2,'1','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2016-05-09 23:47:00',NULL,NULL,1),(3,'1','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2016-05-09 23:47:03',NULL,NULL,1),(4,'15899872592','123456','15899872592',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2016-07-05 23:37:52',NULL,NULL,1);
-
 /*Table structure for table `sxg_user` */
 
 DROP TABLE IF EXISTS `sxg_user`;
 
 CREATE TABLE `sxg_user` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_name` varchar(50) NOT NULL COMMENT '账号',
-  `mobile` varchar(20) NOT NULL COMMENT '电话号码',
+  `user_name` varchar(50) NOT NULL DEFAULT '' COMMENT '账号',
+  `wx_openid` varchar(100) NOT NULL DEFAULT '' COMMENT '微信open_id',
+  `headimgurl` varchar(150) NOT NULL DEFAULT '' COMMENT '微信头像',
+  `mobile` varchar(20) NOT NULL DEFAULT '' COMMENT '电话号码',
   `password` varchar(50) DEFAULT '0' COMMENT '保留字段，密码',
   `is_month` tinyint(4) DEFAULT '0' COMMENT '是否月结，1为月结，0为不是月结',
-  `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
+  `create_time` int(11) DEFAULT '0' COMMENT '创建时间',
   `status` tinyint(4) DEFAULT '1' COMMENT '状态，1为正常，0为冻结',
   `flag` tinyint(4) DEFAULT '1' COMMENT '是否有效，1有效。',
   PRIMARY KEY (`user_id`)
@@ -204,7 +204,7 @@ CREATE TABLE `sxg_user` (
 
 /*Data for the table `sxg_user` */
 
-insert  into `sxg_user`(`user_id`,`user_name`,`mobile`,`password`,`is_month`,`create_time`,`status`,`flag`) values (6,'','15899872592','0',0,1464967024,1,1);
+insert  into `sxg_user`(`user_id`,`user_name`,`wx_openid`,`headimgurl`,`mobile`,`password`,`is_month`,`create_time`,`status`,`flag`) values (6,'','','','15899872592','0',0,1464967024,1,1);
 
 /*Table structure for table `sxg_user_feedback` */
 

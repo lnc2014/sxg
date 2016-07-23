@@ -45,13 +45,13 @@ public function GetOpenid()
 		if (!isset($_GET['code'])){
 			//触发微信返回code码
             $url='http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-			header('Location:https://open.weixin.qq.com/connect/oauth2/authorize?appid='.WxPayConfig::APPID.'&redirect_uri='.$url.'&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect');
+			header('Location:https://open.weixin.qq.com/connect/oauth2/authorize?appid='.WxPayConfig::APPID.'&redirect_uri='.$url.'&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
 			exit();
 		} else {
 			//获取code码，以获取openid
 		    $code = $_GET['code'];
-			$openid = $this->getOpenidFromMp($code);
-			return $openid;
+			$data = $this->getOpenidFromMp($code);
+			return $data;
 		}
 	}
 	
@@ -112,10 +112,8 @@ public function GetOpenid()
 		$res = curl_exec($ch);
 		curl_close($ch);
 		//取出openid
-		$data = json_decode($res,true);  
-		$this->data = $data;
-		$openid = $data['openid'];
-		return $openid;
+		$data = json_decode($res,true);
+		return $data;
 	}
 	
 	/**

@@ -24,21 +24,24 @@ $this->load->view('common/wx_header',array('title'=>$title));
         <div class="city float_left">
             <select class="color_base select_city">
                 <option value="2">广州</option>
+                <option value="3" selected>北京</option>
+                <option value="4" selected>上海</option>
                 <option value="1" selected>深圳</option>
             </select>
             <span class="arrow"></span>
         </div>
         <div class="head float_right">
-            <img src="/static/images/user-head.png" >
+            <img src="<?php echo $user['headimgurl'] ?>" >
         </div>
     </div>
     <div class="repair_devices full_width " id="repair" >
         <div class="repair_row border_bottom" >
             <div class="device">
                 <div class="color_base float_left name">报修机器1</div>
-                <img src="/static/images/icon-arrow.png" class="float_right expend_mark">
+                <img src="/static/wx/images/icon-arrow.png" class="float_right expend_mark">
             </div>
             <div class="device_detail">
+                <div style=" margin-left: 15px; margin-bottom: -3px;color: red;">品牌和型号不是必填项*</div>
                 <div class="detail_row border_bottom">
                     <input type="text" placeholder="机器品牌" name="brand"  id='brand1' class="color_base input">
                     <input type="text" placeholder="机器型号" name="model"  id='model1' class="color_base input input2">
@@ -62,13 +65,13 @@ $this->load->view('common/wx_header',array('title'=>$title));
                         </div>
                     </div>
                 </div>
-
+                <div style="margin-left: 10px;margin-bottom:0px;" id="is_upload"></div>
             </div>
         </div>
     </div>
     <div class="addDevice_row">
-        <button type="button" class="btn_addDevice" onclick="addDevice()">添加报修器</button>
-        <button type="button" class="btn_addDevice" onclick="delDevice()">删除报修器</button>
+        <button type="button" class="btn_addDevice" onclick="addDevice()">添加报修机器</button>
+        <button type="button" class="btn_addDevice" onclick="delDevice()">删除报修机器</button>
     </div>
     <input type="hidden" id="is_problem1" value="0">
     <input type="hidden" id="is_problem2" value="0">
@@ -155,14 +158,14 @@ $this->load->view('common/wx_header',array('title'=>$title));
             var brand1 = $("#brand1").val();
             var model1 = $("#model1").val();
             var description1 = $("#description").val();
-            if(!brand1){
-                alert('机器名牌不能为空');
-                return;
-            }
-            if(!model1){
-                alert('机器型号不能为空');
-                return;
-            }
+//            if(!brand1){
+//                alert('机器名牌不能为空');
+//                return;
+//            }
+//            if(!model1){
+//                alert('机器型号不能为空');
+//                return;
+//            }
             if(!description1 && (problem1 == 0) && (problem2 == 0)&& (problem3 == 0)&& (problem4 == 0) ){
                 alert('需要维修的问题不能为空');
                 return;
@@ -241,7 +244,7 @@ $this->load->view('common/wx_header',array('title'=>$title));
         var html = '<div class="repair_row shrink border_bottom" id="repair'+i+ '">'+
             '<div class="device">'+
             '<div class="color_base float_left name">报修机器'+i+ '</div>'+
-            '<img src="/static/images/icon-arrow.png" class="float_right expend_mark">'+
+            '<img src="/static/wx/images/icon-arrow.png" class="float_right expend_mark">'+
             '</div>'+
             '<div class="device_detail">'+
             '<div class="detail_row border_bottom">'+
@@ -323,16 +326,20 @@ $this->load->view('common/wx_header',array('title'=>$title));
                 alert('上传成功');
                 var html = '<div class="img_li float_left"  id="show_img'+images+'">'+
                     '<img src="'+data.data.path+'" class="full_width full_height">'+
-                    '<img src="/static/images/close.png" class="close1" id="del_img'+images+'">'+
+                    '<img src="/static/wx/images/close.png" class="close1" id="del_img'+images+'">'+
                     '</div>';
                 $('.div_images').append(html);
                 $('#img'+images).val(data.data.path2);
+                $('#is_upload').text('');
             }
         });
         // 文件上传失败，现实上传出错。
         uploader.on( 'uploadError', function( file, data) {
             alert(data.info);
             destroy();
+        });
+        uploader.on( 'uploadProgress', function() {
+            $('#is_upload').text('正在上传.....');
         });
     });
     $(function(){

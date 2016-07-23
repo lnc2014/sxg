@@ -41,14 +41,12 @@ class Sxg_invoice extends BaseModel{
 
         $this->db->select()->from($this->order_table)->where($condition);
         $query = $this->db->get();
-
         //是返回一条数据还是多条数据
         if($more == 1){
             $result = $query->row_array();
         }else{
             $result = $query->result_array();
         }
-
         return $result;
     }
 

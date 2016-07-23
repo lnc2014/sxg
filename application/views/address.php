@@ -19,7 +19,7 @@ $this->load->view('common/wx_header',array('title'=>$title));
                         <div class="contact"><?php echo $val['name'].'&nbsp'; if($val['sex'] == 1){ echo '先生'.'&nbsp';}else{ echo '女士'.'&nbsp';} echo $val['mobile'];?>  </div>
                         <div class="address color_base">地址：<?php  echo $val['province'].$val['city'].$val['area'].$val['street']?></div>
                     </div>
-                    <a href="/index.php/sxg/add_address/<?php echo $val['address_id'] ?>"><div class="edit float_right">编辑</div></a>
+                    <a href="/index.php/sxg/add_address/<?php echo $order_id?>/<?php echo $val['address_id'] ?>"><div class="edit float_right">编辑</div></a>
                     <i></i>
                 </div>
          <?php  } ?>

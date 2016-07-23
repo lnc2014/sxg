@@ -30,7 +30,7 @@ $base_img_url = $this->config->item('img_url');
         <div class="div_contact border_bottom">
             <div class="contact_title color_a8 float_left">联系人</div>
             <div class="contact_info float_left">
-                <div class="contact_name border_bottom"><input type="text" id="input_name" name="contact_name" placeholder="您的姓名"></div>
+                <div class="contact_name border_bottom"><input type="text" id="input_name" value="<?php echo empty($address['name']) ?'':$address['name']?>" name="contact_name" placeholder="您的姓名"></div>
                 <div class="contact_gender">
                     <label class="gender1"><input type="radio" name="gender" id="man" class="test">先生</label>
                     <label><input type="radio" name="gender"id="woman" class="test2">女士</label>
@@ -43,7 +43,7 @@ $base_img_url = $this->config->item('img_url');
                 <div class="addr_city"><select class="prov"></select><select class="city"></select><select class="dist"></select></div>
                 <div class="addr_street">
 <!--                    <img src="--><?php //echo $base_img_url?><!--annotation.png" onclick="location='--><?php //echo site_url('sxg/address_map')?>
-                    <img src="/static/images/annotation.png"><input type="text" id="street" name="input_street" placeholder="街道，小区">
+                    <img src="/static/wx/images/annotation.png"><input type="text" id="street" name="input_street" value="<?php echo empty($address['street']) ?'':$address['street']?>" placeholder="街道，小区">
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@ $base_img_url = $this->config->item('img_url');
 <!--        </div>-->
         <div class="div_tel border_bottom">
             <span class="q_til color_a8">联系电话</span>
-            <input type="text" class="input_qh" placeholder="请输入联系人电话" name="input_tel" id="mobile" >
+            <input type="text" class="input_qh" placeholder="请输入联系人电话"  value="<?php echo empty($address['mobile']) ?'':$address['mobile']?>" name="input_tel" id="mobile" >
         </div>
         <div class="div_default_addr">
             <label class="color_base"><input type="radio" name="input_default_addr" value="1" id="default">设为默认地址</label>
@@ -133,6 +133,7 @@ $base_img_url = $this->config->item('img_url');
                 type: "POST",
                 url: "/index.php/sxg/add_user_address",
                 data: {
+                    address_id : <?php echo empty($address['address_id'])?0:$address['address_id'];?>,
                     sex : is_man,
                     mobile : number,
                     province : prov,

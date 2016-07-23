@@ -8,18 +8,21 @@
 include_once "WxBaseController.php";
 
 class Sxg extends WxBaseController{
-
     /**
      * 快速登录页面
      */
     public function index(){
-        $title = '快速登录';
-//        $open_id = $this->get_user_openid();
-        $this->load->view('login',array(
-            'title' => $title
+        $title = '闪修哥快速下单';
+        $this->check_user();
+        //获取到用户的信息
+        $this->load->model('admin/sxg_user');
+        $user = $this->sxg_user->get_one(array('wx_openid' => $_SESSION['jspayOpenId']), 'user_name,headimgurl');
+        $this->load->view('quick_order',array(
+            'title' => $title,
+            'user' => $user
         ));
-    }
 
+    }
     /**
      *验证码判断
      */
@@ -45,84 +48,25 @@ class Sxg extends WxBaseController{
             return;
         }
     }
-
-    /**
-     * 检测用户是否登录
-     * @param $phone
-     * @return bool
-     */
-    public function check_user_(){
-//        $_SESSION['user_id'] = 1;//测试
-//        $_SESSION['phone'] = '15899872592';//测试
-        if(!empty($_SESSION['user_id'])){
-            return true;
-        }
-        if(empty($phone)){
-            return false;
-        }else{
-            $this->load->model("sxg_user");
-            $user_id = $this->sxg_user->get_user_by_phone($phone);
-            if($user_id > 0 ) {
-                $_SESSION['user_id'] = $user_id;
-                $_SESSION['phone'] = '15899872592';
-                return true;
-            }
-            return false;
-        }
-    }
-    /**
-     * 检测用户是否有已授权
-     */
-    private function check_user()
-    {
-        // $_SESSION['user_id'] = 21;//本地调试
-        if ($_SESSION['user_id']) {
-            return true;
-        }
-        //用户无登录入口，必须微信自动登录
-        $this->load->model('sxg_user');
-        $openid = $this->get_user_openid();
-        $user_info = $this->sxg_user->get_one(array('wx_openid' => $openid), 'user_id');
-        if (!empty($user_info)) {
-            $_SESSION['user_id'] = $user_info['user_id'];
-            $_SESSION['jspayOpenId'] = $openid;
-            return true;
-        } else {//用户不存在就添加一条记录
-            $data = array(
-                'wx_openid' => $openid
-            );
-            $user_id = $this->M_cw_user->add($data);
-            if($user_id > 0 ){
-                $_SESSION['user_id'] = $user_id;
-//                $_SESSION['last_motorcade'] = 0;
-                $_SESSION['jspayOpenId'] = $openid;
-                return true;
-            }else{
-                return false;
-            }
-        }
-    }
-    /**
-     * 发送验证码
-     */
-    public function get_code($mobile, $code){
-        //发送短信
-        $this->load->library('sms');
-        return $this->sms->send_register($mobile, $code);
-    }
-
     /**
      * 快速下单的首页
      */
     public function quick_order(){
         $title = "快速下单";
-
         $this->load->view('quick_order',array(
             'title' => $title
         ));
-
     }
 
+    /**
+     * 手机号码绑定
+     */
+    public function band_phone(){
+        $title = "手机号码绑定";
+        $this->load->view('login',array(
+            'title' => $title
+        ));
+    }
     /**
      * 用户快速下单
      */
@@ -141,7 +85,7 @@ class Sxg extends WxBaseController{
         $post['order_no'] = 'SXG'.date('YmdHis').rand(10000,99999);
         $post['createtime'] = time();
         $post['updatetime'] = time();
-        $this->load->model("sxg_order");
+        $this->load->model("admin/sxg_order");
         $order_id = $this->sxg_order->insert_data($post);
         if($order_id > 0 ){
             $data['order_id'] =  $order_id;
@@ -163,8 +107,8 @@ class Sxg extends WxBaseController{
         };
 
         $user_id  = $_SESSION['user_id'];
-        $this->load->model("sxg_order");
-        $this->load->model("sxg_address");
+        $this->load->model("admin/sxg_order");
+        $this->load->model("admin/sxg_address");
         $order = $this->sxg_order->find_order_by_id($order_id);
         if(empty($order)){
             exit("<script>alert('订单信息不存在!');location.href='/index.php/sxg/index';</script>");
@@ -277,10 +221,9 @@ class Sxg extends WxBaseController{
             exit();
         }
         unset($data['order_id']);
-
         $data['visit_time'] = strtotime($data['visit_time']);
         $data['updatetime'] = time();
-        $this->load->model("sxg_order");
+        $this->load->model("admin/sxg_order");
         $update_order = $this->sxg_order->update_order_by_condition($data,array(
             'id' => $order_id
         ));
@@ -293,7 +236,6 @@ class Sxg extends WxBaseController{
         }
 
     }
-
     /**
      * 选择地址
      */
@@ -306,7 +248,7 @@ class Sxg extends WxBaseController{
             echo $this->apiReturn('0004', new stdClass(), '用户尚未登录');
             exit();
         };
-        $this->load->model("sxg_address");
+        $this->load->model("admin/sxg_address");
         $address = $this->sxg_address->find_address_by_user_id($_SESSION['user_id']);
         $this->load->view('address',array(
             'title' => $title,
@@ -314,35 +256,56 @@ class Sxg extends WxBaseController{
             'order_id' => $order_id
         ));
     }
-    public function add_address($order_id = ''){
-        $title = "新增地址";
+    public function add_address($order_id = '', $address_id = ''){
+        $address = array();
+        if(empty($address_id)){
+            $title = "新增地址";
+        }else{
+            $title = "修改地址";
+            $this->load->model("admin/sxg_address");
+            $address = $this->sxg_address->get_one(array(
+                'address_id' => $address_id
+            ));
+        }
         $this->load->view('add-address',array(
             'title' => $title,
-            'order_id' => $order_id
+            'order_id' => $order_id,
+            'address' => $address
         ));
     }
-
     /**
      * 用户添加地址接口
      */
     public function add_user_address(){
-        $_SESSION['user_id'] = 1;
         if(!$this->check_user()){
             echo $this->apiReturn('0004', new stdClass(), '用户尚未登录');
             exit();
         };
         $post = $this->input->post(NULL, TRUE);
-        $post['user_id'] = $_SESSION['user_id'];
-
-        $post['create_time'] = time();
-        $post['update_time'] = time();
-        $this->load->model("sxg_address");
-        $address_id = $this->sxg_address->insert_data($post);
-        if($address_id > 0 ){
-            $data['address_id'] =  $address_id;
-            echo $this->apiReturn('0000', $data, 'success');
-            exit();
+        $this->load->model("admin/sxg_address");
+        if(!empty($post['address_id'])){
+            $address_id = $post['address_id'];
+            unset($post['address_id']);
+            $update = $this->sxg_address->update($post,array('address_id' => $address_id));
+            if($update){
+                $data['address_id'] =  $address_id;
+                echo $this->apiReturn('0000', $data, 'success');
+                exit();
+            }
+        }else{
+            unset($post['address_id']);
+            $post['user_id'] = $_SESSION['user_id'];
+            $post['create_time'] = time();
+            $post['update_time'] = time();
+            $address_id = $this->sxg_address->insert_data($post);
+            if($address_id > 0 ){
+                $data['address_id'] =  $address_id;
+                echo $this->apiReturn('0000', $data, 'success');
+                exit();
+            }
         }
+
+
 
     }
     public function address_map(){
@@ -351,11 +314,10 @@ class Sxg extends WxBaseController{
             'title' => $title
         ));
     }
-
     /**
      * 发票管理
      */
-        public function invoice(){
+    public function invoice(){
         $title = "发票管理";
         if(!$this->check_user()){
             echo $this->apiReturn('0004', new stdClass(), '用户尚未登录');
@@ -369,7 +331,6 @@ class Sxg extends WxBaseController{
             'invoice_list' => $invoice_list,
         ));
     }
-
     /**
      * 开票
      */
@@ -387,7 +348,6 @@ class Sxg extends WxBaseController{
             'order_list' => $order_list,
         ));
     }
-
     /**
      * 开票第二步骤
      */
@@ -419,7 +379,6 @@ class Sxg extends WxBaseController{
             'money' => $money,
         ));
     }
-
     /**
      * 获取发票详情
      * @param $invoice_id
@@ -489,7 +448,6 @@ class Sxg extends WxBaseController{
             'title' => $title
         ));
     }
-
     /**
      * 意见反馈
      */
@@ -499,7 +457,6 @@ class Sxg extends WxBaseController{
             'title' => $title
         ));
     }
-
     /**
      *反馈与意见
      */
@@ -536,7 +493,6 @@ class Sxg extends WxBaseController{
     public function upload(){
         $this->load->library('upload_image');
         $ret = $this->upload_image->upload('file');
-
         if($ret['is_success']){
             $ret['path2'] = str_replace(ROOTPATH, '', $ret['path']);//将路径换成相对路径
             $ret['path'] = 'http://'.$_SERVER['HTTP_HOST'].'/'.$ret['path2'];//将路径换成相对路径
@@ -546,11 +502,9 @@ class Sxg extends WxBaseController{
         echo $this->apiReturn('0002', $ret, '上传失败');
         return;
     }
-
     public function test(){
         $this->load->view('test');
     }
-
     /**
      * 我的订单列表
      */
@@ -560,10 +514,8 @@ class Sxg extends WxBaseController{
             exit();
         };
         $user_id = $_SESSION['user_id'];
-
-        $this->load->model("sxg_order");
+        $this->load->model("admin/sxg_order");
         $order = $this->sxg_order->find_all_order_by_user_id($user_id, $status);
-
         $order_list = array();
         foreach($order as $k => $val){
             $order_list[$k]['status'] = $this->status_info($val['status']);
@@ -624,15 +576,46 @@ class Sxg extends WxBaseController{
     public function get_user_openid(){
         include_once(FCPATH . "public/user-pay/WxOpenIdHelper.php");
         $wxopenidhelper = new WxOpenIdHelper();
-        $openid = $wxopenidhelper->getOpenId();
-        $_SESSION['jspayOpenId'] = $openid;
-        return $openid;
+        $data = $wxopenidhelper->getOpenId();
+        $_SESSION['jspayOpenId'] = $data['openid'];
+        return $data;
     }
+    /**
+     * 通过授权拿到用户的openid和access_token
+     */
+    public function get_user_snaspi(){
+        include_once(FCPATH . "public/user-pay/WxOpenIdHelper.php");
+        $wxopenidhelper = new WxOpenIdHelper();
+        $data = $wxopenidhelper->getOpenId();
+        //获取到授权之后，将授权存入session中
+        $_SESSION['access_token'] = $data['access_token'];
+        $_SESSION['jspayOpenId'] = $data['openid'];
+        return $data;
+    }
+    /**
+     * 获取用户的头像
+     * @param $open_id
+     * @param $token
+     * @return mixed
+     */
+    public function get_user_info_by_snsapi($open_id, $token){
+        $url="https://api.weixin.qq.com/sns/userinfo?access_token=$token&openid=$open_id&lang=zh_CN";
+        $result=  file_get_contents($url);
+
+        $result=  explode(",", $result);
+        $nick_name=  explode(":",$result[1]);
+        $head_url=  explode(":", $result[7]);
+        $data["nick_name"]= str_replace('"',"",$nick_name[1]);
+        $data["head_url"]=$head_url[1].":".$head_url[2];
+        $data['head_url'] = str_replace('"',"",$data['head_url']);
+        $data['head_url'] = stripslashes($data['head_url']);
+        return $data;
+    }
+
     /**
      * 微信支付参数拼接
      */
     public function wxpay_params(){
-
         $attach = '';//附加数据，支付用户ID和订单编号和司机id
         $total_fee = 1;
         $openid = $_SESSION['jspayOpenId'];
