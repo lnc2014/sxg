@@ -36,8 +36,8 @@ class WxBaseController extends CI_Controller
      */
     public function check_user()
     {
-        $_SESSION['user_id'] = 1;
-        $_SESSION['jspayOpenId'] = 'ohoNsuGpFYcqe6AWeJ9plmVAir5A';
+//        $_SESSION['user_id'] = 1;
+//        $_SESSION['jspayOpenId'] = 'ohoNsuGpFYcqe6AWeJ9plmVAir5A';
         //检测用户是否已经登录授权过
         if(isset($_SESSION['user_id']) && isset($_SESSION['jspayOpenId'])){
             return true;
@@ -78,7 +78,7 @@ class WxBaseController extends CI_Controller
         }
         $this->load->model('admin/sxg_user');
         $user = $this->sxg_user->get_one(array('user_id' => $user_id), 'mobile');
-        if(empty($user)){
+        if(empty($user['mobile'])){
             return false;
         }
         return true;

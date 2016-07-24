@@ -49,6 +49,22 @@ $this->load->view('common/wx_header',array('title'=>$title));
         var sender = document.getElementById("sendcode");
         countdown(sender);
         //发送验证码TODO
+        $.ajax({
+            url: "/index.php/sxg/send_code",
+            type: "POST",
+            data: {
+                phone:mobile
+            },
+            success: function(json){
+                var json = eval('(' + json + ')');
+                if (json.result == '0000') {
+                    alert('获取验证码成功！');
+                } else {
+                    alert(json.info);
+                }
+            },
+            error: function(){}
+        });
 
     });
     $("#login").click(function(){
@@ -82,7 +98,8 @@ $this->load->view('common/wx_header',array('title'=>$title));
                 if (json.result != '0000') {
                     alert(json.info);
                 } else {
-                    location.href = '/index.php/sxg/quick_order';
+                    alert('绑定成功！');
+                    location.href = '/index.php/sxg/order_detail';
                 }
             },
             error: function(){}

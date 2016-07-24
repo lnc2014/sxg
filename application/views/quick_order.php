@@ -212,7 +212,10 @@ $this->load->view('common/wx_header',array('title'=>$title));
                 success: function(json){
                     if(json.result == '0000'){
                         window.location = '/index.php/sxg/order_detail/'+json.data.order_id;
-                    }else {
+                    }else if(json.result == '0001'){
+                        alert(json.info);
+                        window.location = '/index.php/sxg/band_phone';
+                    }else{
                         alert(json.info);
                     }
                 },

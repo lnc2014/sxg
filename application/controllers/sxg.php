@@ -38,11 +38,23 @@ class Sxg extends WxBaseController{
             echo $this->apiReturn('0002', new stdClass(), '用户不存在');
             return;
         }
-        $phone_code = $phone.date('Ymd');
-        $sms_code = empty($_SESSION[$phone_code])?0:$_SESSION[$phone_code];
+        $sms_code = empty($_SESSION['code'])?0:$_SESSION['code'];
         if($sms_code !== $code){//暂时定为验证正确
-            echo $this->apiReturn('0000', new stdClass(), 'success');
-            return;
+            //绑定手机
+            $this->load->model('admin/sxg_user');
+            $update = $this->sxg_user->update(array(
+                'mobile' => $phone
+            ),array(
+                'user_id' => $_SESSION['user_id']
+            ));
+            if($update){
+                $_SESSION['phone'] = $phone;
+                echo $this->apiReturn('0000', new stdClass(), 'success');
+                return;
+            }else{
+                echo $this->apiReturn('0002', new stdClass(), '绑定失败');
+                return;
+            }
         }else{
             echo $this->apiReturn('0001', new stdClass(), '验证码不正确');
             return;
@@ -53,11 +65,13 @@ class Sxg extends WxBaseController{
      */
     public function quick_order(){
         $title = "快速下单";
+        $this->load->model('admin/sxg_user');
+        $user = $this->sxg_user->get_one(array('wx_openid' => $_SESSION['jspayOpenId']), 'user_name,headimgurl');
         $this->load->view('quick_order',array(
-            'title' => $title
+            'title' => $title,
+            'user' => $user
         ));
     }
-
     /**
      * 手机号码绑定
      */
@@ -67,11 +81,31 @@ class Sxg extends WxBaseController{
             'title' => $title
         ));
     }
+
+    /**
+     * 发送验证码
+     */
+    public function send_code(){
+        $phone = $this->input->post('phone');
+        if(empty($phone)){
+            echo $this->apiReturn('0003', new stdClass(), '参数不正确');
+            return;
+        }
+        $code = rand(100000, 999999);
+        $_SESSION['code'] = $code;//存入session中用于校验
+        $is_get = $this->get_code($phone, $code);
+        if($is_get){
+            echo $this->apiReturn('0000', new stdClass(), '获取验证码成功！');
+            return;
+        }else{
+            echo $this->apiReturn('0002', new stdClass(), '获取验证码失败！');
+            return;
+        }
+    }
     /**
      * 用户快速下单
      */
     public function add_order(){
-        $_SESSION['user_id'] = 1;
         if(!$this->check_user()){
             echo $this->apiReturn('0004', new stdClass(), '用户尚未登录');
             exit();
@@ -81,7 +115,6 @@ class Sxg extends WxBaseController{
         unset($post['img']);
         $post['repair_option'] = trim($post['repair_option'],',');
         $post['user_id'] = $_SESSION['user_id'];
-
         $post['order_no'] = 'SXG'.date('YmdHis').rand(10000,99999);
         $post['createtime'] = time();
         $post['updatetime'] = time();
@@ -89,25 +122,38 @@ class Sxg extends WxBaseController{
         $order_id = $this->sxg_order->insert_data($post);
         if($order_id > 0 ){
             $data['order_id'] =  $order_id;
-            echo $this->apiReturn('0000', $data, 'success');
-            exit();
+            //检车用户是不是已经绑定手机
+            $check_phone = $this->check_phone($_SESSION['user_id']);
+            if($check_phone){
+                echo $this->apiReturn('0000', $data, 'success');
+                exit();
+            }else{
+                echo $this->apiReturn('0001', $data, '该账号尚未绑定手机,请进行绑定手机操作！');
+                exit();
+            }
         }
-
     }
     /**
      * 订单详情
      */
     public function order_detail($order_id = '', $address_id = ''){
+        $this->load->model("admin/sxg_order");
         if(empty($order_id)){
-            exit("<script>alert('非法请求!');location.href='/index.php/sxg/index';</script>");
+            //先去order表中查找订单
+            $order = $this->sxg_order->get_one(array(
+                'user_id' => $_SESSION['user_id']
+            ),'id');
+            if(empty($order)){
+                exit("<script>alert('非法请求!');location.href='/index.php/sxg/index';</script>");
+            }else{
+                $order_id = $order['id'];
+            }
         }
         if(!$this->check_user()){
             echo $this->apiReturn('0004', new stdClass(), '用户尚未登录');
             exit();
         };
-
         $user_id  = $_SESSION['user_id'];
-        $this->load->model("admin/sxg_order");
         $this->load->model("admin/sxg_address");
         $order = $this->sxg_order->find_order_by_id($order_id);
         if(empty($order)){
@@ -162,13 +208,14 @@ class Sxg extends WxBaseController{
             exit();
         };
         //微信支付需要的openid
-        $open_id = $this->get_user_openid();
-        if(!empty($open_id)){
+        if(empty($_SESSION['jspayOpenId'])){
+            $data = $this->get_user_openid();
+            $open_id = $data['openid'];
             $_SESSION['jspayOpenId'] = $open_id;
         }
         $user_id  = $_SESSION['user_id'];
-        $this->load->model("sxg_order");
-        $this->load->model("sxg_address");
+        $this->load->model("admin/sxg_order");
+        $this->load->model("admin/sxg_address");
 
         $order = $this->sxg_order->find_order_by_id($order_id);
 
@@ -304,9 +351,6 @@ class Sxg extends WxBaseController{
                 exit();
             }
         }
-
-
-
     }
     public function address_map(){
         $title = "新增地址";
@@ -323,7 +367,7 @@ class Sxg extends WxBaseController{
             echo $this->apiReturn('0004', new stdClass(), '用户尚未登录');
             exit();
         };
-        $this->load->model("sxg_invoice");
+        $this->load->model("admin/sxg_invoice");
         $invoice_list = $this->sxg_invoice->get_invoice_list($_SESSION['user_id']);
 //        1、受理中2、已开票（配送中）3、已完成 发票的状态
         $this->load->view('invoice_list',array(
@@ -340,7 +384,7 @@ class Sxg extends WxBaseController{
             echo $this->apiReturn('0004', new stdClass(), '用户尚未登录');
             exit();
         };
-        $this->load->model("sxg_order");
+        $this->load->model("admin/sxg_order");
         $order_list = $this->sxg_order->find_all_order_by_user_id($_SESSION['user_id'], 7);
 
         $this->load->view('add_invoice',array(
@@ -361,7 +405,7 @@ class Sxg extends WxBaseController{
             exit();
         };
         $user_id = $_SESSION['user_id'];
-        $this->load->model("sxg_address");
+        $this->load->model("admin/sxg_address");
         if(empty($address_id)){
             //地址信息
             $address = $this->sxg_address->find_address_by_condition(array(
@@ -387,9 +431,9 @@ class Sxg extends WxBaseController{
         if(empty($invoice_id)){
             exit("<script>alert('非法请求!');location.href='/index.php/sxg/my_account';</script>");
         }
-        $this->load->model("sxg_invoice");
-        $this->load->model("sxg_address");
-        $this->load->model("sxg_delivery");
+        $this->load->model("admin/sxg_invoice");
+        $this->load->model("admin/sxg_address");
+        $this->load->model("admin/sxg_delivery");
         $invoice = $this->sxg_invoice->get_invoice_detail($invoice_id);
         $delivery = $this->sxg_delivery->get_delivery_id_detail($invoice['delivery_id']);
         $address = $this->sxg_address->find_address_by_condition(array(
@@ -428,7 +472,7 @@ class Sxg extends WxBaseController{
         $post['user_id'] = $_SESSION['user_id'];
         $post['createtime'] = time();
         $post['updatetime'] = time();
-        $this->load->model("sxg_invoice");
+        $this->load->model("admin/sxg_invoice");
         $order_id = $this->sxg_invoice->insert_data($post);
         if($order_id > 0){
             echo $this->apiReturn('0000', new stdClass(), 'success');
@@ -471,10 +515,10 @@ class Sxg extends WxBaseController{
             exit();
         };
 
-        $this->load->model("sxg_user_feedback");
+        $this->load->model("admin/sxg_user_feedback");
         $data = array(
             'user_id' => $_SESSION['user_id'],
-            'mobile' => $_SESSION['phone'],
+            'mobile' => empty($_SESSION['phone'])?'':$_SESSION['phone'],
             'content' => trim($feedback),
             'feedback_time' => time(),
         );
@@ -629,11 +673,9 @@ class Sxg extends WxBaseController{
         $input->SetBody('闪修哥微信费用支付');
         $input->SetAttach($attach);
         $input->SetOut_trade_no('shanxiuge'.date("YmdHis").rand(1000,9999));    //订单号
-
         $input->SetOut_trade_no(date("YmdHis"));
         //$input->SetTotal_fee($total_fee * 100);   //总费用
         $input->SetTotal_fee($total_fee);   //总费用
-
         $input->SetTime_start(date("YmdHis"));
         //$input->SetTime_expire(date("YmdHis", time() + 1200));
         $input->SetNotify_url(WxPayConfig::NOTIFY_URL);   //支付回调地址，这里改成你自己的回调地址。

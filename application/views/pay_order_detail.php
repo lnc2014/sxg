@@ -108,7 +108,6 @@ $this->load->view('common/wx_header',array('title'=>$title));
 <script type="text/javascript">
 
     function jspay(){
-
         $.ajax({
             type: "POST",
             url: "/index.php/sxg/wxpay_params",
