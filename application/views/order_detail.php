@@ -56,7 +56,8 @@ $this->load->view('common/wx_header',array('title'=>$title));
         <div class="main_t border_bottom" id="is_point_time" style="display: none;">
             <div class="main_l float_left">指定时间</div>
             <div class="main_r float_left color_base">
-                <input style="margin-top: 10px" id="point_time" type="datetime-local" value="" placeholder="">
+<!--                <input style="margin-top: 10px"  type="datetime-local" value="" placeholder="">-->
+                <input class="weui_input" style="margin-top: 10px"  id="point_time" type="datetime-local" name="start_time" id="start_time" value="" placeholder="请选择出发时间">
             </div>
         </div>
     </div>
