@@ -7,9 +7,9 @@
  */
 class sms{
     //企业ID
-    private $userid = 3667;
-    private $admin  = '一楠城市闪修';
-    private $psw = 'YNsx787';
+    private $userid = ;
+    private $admin  = '';
+    private $psw = '';
 
     private function send_sms($phone_number, $sms_content) {
         $time = time();
