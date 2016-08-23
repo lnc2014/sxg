@@ -144,4 +144,34 @@ class Sxg_order extends BaseModel{
         $query = $this->db->get();
         return $query->result_array();
     }
+
+    /**
+     * 通过维修人员ID找到该维修人员的所有订单
+     * @param $repair_user_id
+     */
+    public function get_repair_order_list($repair_user_id){
+        $this->db->select('o.`id`,o.`status`,u.`user_name`,u.`mobile`,a.`province`,a.`city`,a.`area`,a.`sex`,a.`street`,o.`visit_option`,o.`visit_time`');
+        $this->db->from('sxg_order AS o , sxg_user AS u , sxg_address AS a');
+        $this->db->where("o.`repair_user_id`", $repair_user_id);
+        $this->db->where('u.`user_id` = o.`user_id`');
+        $this->db->where('a.`address_id` = o.`address_id`');
+        $this->db->order_by('o.`id`', 'DESC');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    /**
+     * 通过订单ID找到维修订单的详细信息
+     * @param $order_id
+     * @return mixed
+     */
+    public function get_repair_order_detail($order_id){
+        $this->db->select('a.*,o.*,u.*,o.status as order_status');
+        $this->db->from('sxg_address AS a, sxg_order AS o, sxg_user AS u');
+        $this->db->where("o.`id`", $order_id);
+        $this->db->where('u.`user_id` = o.`user_id`');
+        $this->db->where('o.`address_id`  = a.`address_id`');
+        $query = $this->db->get();
+        return $query->row_array();
+    }
 }

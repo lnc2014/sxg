@@ -73,6 +73,7 @@ class BaseModel extends CI_Model{
         if(!empty($where)){
             $this->db->where($where);
         }
+        $this->db->order_by('id', 'DESC');
         $query = $this->db->get($this->_tablename, $limit, $offset);
         return $query->result_array();
     }

@@ -55,7 +55,7 @@ $this->load->view('common/wx_header',array('title'=>$title));
         <div class="order_group">
             <div class="ct_row">
                 <span class="color_base"><?= $address['name'] ?><?php if($address['sex']==1){echo '先生';}else{echo '女士';}?></span>
-                <a href="tel:<?= $address['mobile'] ?>"><img src="/static/images/phone.png" class="img_phone" ><span class="phone_num"><?= $address['mobile'] ?></span></a>
+                <a href="tel:<?= $address['mobile'] ?>"><img src="/static/wx/images/phone.png" class="img_phone" ><span class="phone_num"><?= $address['mobile'] ?></span></a>
             </div>
             <div class="ct_row">
                 <span class="color_a8">地址：</span>
@@ -66,7 +66,7 @@ $this->load->view('common/wx_header',array('title'=>$title));
             <div class="d_row border_bottom">
                 <span class="color_a8 r_title">维修员</span>
                 <div class="r_cont">
-                    <label><input type="radio" checked><?php if($order['repair_assign'] == 1){ echo '随机指派';}else{ echo '指定维修人员';}?></label>
+                    <label><?php if($order['repair_assign'] == 1){ echo '随机指派';}else{ echo '指定维修人员';}?></label>
                     <div class="color_a8 nominee_info">
                         <div>姓名：张三&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;工号：123345</div>
                         <div>联系电话：13578656765</div>

@@ -16,7 +16,7 @@ class Sxg extends WxBaseController{
         $this->check_user();
         //获取到用户的信息
         $this->load->model('admin/sxg_user');
-        $user = $this->sxg_user->get_one(array('wx_openid' => $_SESSION['jspayOpenId']), 'user_name,headimgurl');
+        $user = $this->sxg_user->get_one(array('wx_openid' => $_SESSION['jspayOpenId']), 'user_name,headimgurl,last_model,last_band');
         $this->load->view('quick_order',array(
             'title' => $title,
             'user' => $user
@@ -66,7 +66,7 @@ class Sxg extends WxBaseController{
     public function quick_order(){
         $title = "快速下单";
         $this->load->model('admin/sxg_user');
-        $user = $this->sxg_user->get_one(array('wx_openid' => $_SESSION['jspayOpenId']), 'user_name,headimgurl');
+        $user = $this->sxg_user->get_one(array('wx_openid' => $_SESSION['jspayOpenId']), 'user_name,headimgurl,last_model,last_band');
         $this->load->view('quick_order',array(
             'title' => $title,
             'user' => $user
@@ -92,8 +92,10 @@ class Sxg extends WxBaseController{
             return;
         }
         $code = rand(100000, 999999);
+        $code = 888888;
         $_SESSION['code'] = $code;//存入session中用于校验
-        $is_get = $this->get_code($phone, $code);
+//        $is_get = $this->get_code($phone, $code);
+        $is_get = true;
         if($is_get){
             echo $this->apiReturn('0000', new stdClass(), '获取验证码成功！');
             return;
@@ -119,6 +121,15 @@ class Sxg extends WxBaseController{
         $post['createtime'] = time();
         $post['updatetime'] = time();
         $this->load->model("admin/sxg_order");
+        $this->load->model("admin/sxg_user");
+        //更新常用的机器品牌型号信息
+        $user_data = array(
+            'last_model' => $post['print_model'],
+            'last_band' => $post['print_band'],
+        );
+        $this->sxg_user->update($user_data,array(
+            'user_id' => $_SESSION['user_id']
+        ));
         $order_id = $this->sxg_order->insert_data($post);
         if($order_id > 0 ){
             $data['order_id'] =  $order_id;
@@ -177,11 +188,14 @@ class Sxg extends WxBaseController{
         foreach($repair_option as $value){
             if(is_numeric(strpos($value,'0001'))){
                 $repair_info = $repair_info.';'.'加粉';
-            }elseif(is_numeric(strpos($value,'0002'))){
+            }
+            if(is_numeric(strpos($value,'0002'))){
                 $repair_info = $repair_info.';'.'打印质量差';
-            }elseif(is_numeric(strpos($value,'0003'))){
+            }
+            if(is_numeric(strpos($value,'0003'))){
                 $repair_info = $repair_info.';'.'不能开机';
-            }elseif(is_numeric(strpos($value,'0004'))){
+            }
+            if(is_numeric(strpos($value,'0004'))){
                 $repair_info = $repair_info.';'.'卡纸';
             }
         }
@@ -234,8 +248,6 @@ class Sxg extends WxBaseController{
         }
         $repair_info = trim($repair_info, ';');
         $order['repair_info'] = $repair_info.';'.$order['repair_problem'];
-
-        $order['status'] = $this->status_info($order['status']);
         $order['status'] = $this->status_info($order['status']);
         $address = $this->sxg_address->find_address_by_condition(array(
             'address_id' => $order['address_id']
@@ -488,6 +500,7 @@ class Sxg extends WxBaseController{
      */
     public function my_account(){
         $title = "我的账户";
+
         $this->load->view('my-account',array(
             'title' => $title
         ));
@@ -514,7 +527,6 @@ class Sxg extends WxBaseController{
             echo $this->apiReturn('0004', new stdClass(), '用户尚未登录');
             exit();
         };
-
         $this->load->model("admin/sxg_user_feedback");
         $data = array(
             'user_id' => $_SESSION['user_id'],
@@ -559,12 +571,40 @@ class Sxg extends WxBaseController{
         };
         $user_id = $_SESSION['user_id'];
         $this->load->model("admin/sxg_order");
+        $this->load->model("admin/sxg_address");
+        $this->load->model("admin/sxg_user");
         $order = $this->sxg_order->find_all_order_by_user_id($user_id, $status);
         $order_list = array();
         foreach($order as $k => $val){
             $order_list[$k]['status'] = $this->status_info($val['status']);
             $order_list[$k]['createtime'] = date('Y-m-d H:i:s', $val['createtime']);
             $order_list[$k]['order_id'] = $val['id'];
+            $order_list[$k]['print_band'] = $val['print_band'];
+            $order_list[$k]['print_model'] = $val['print_model'];
+            $repair_info = '';
+            if(is_numeric(strpos($val['repair_option'],'0001'))){
+                $repair_info = $repair_info.';'.'加粉';
+            }
+            if(is_numeric(strpos($val['repair_option'],'0002'))){
+                $repair_info = $repair_info.';'.'打印质量差';
+            }
+            if(is_numeric(strpos($val['repair_option'],'0003'))){
+                $repair_info = $repair_info.';'.'不能开机';
+            }
+            if(is_numeric(strpos($val['repair_option'],'0004'))){
+                $repair_info = $repair_info.';'.'卡纸';
+            }
+            $repair_info = trim($repair_info, ';');
+            $order_list[$k]['repair_info'] = $repair_info.';'.$order['repair_problem'];
+            $address = $this->sxg_address->find_address_by_condition(array(
+                'address_id' => $val['address_id']
+            ));
+            $user = $this->sxg_user->get_one(array(
+                'user_id' => $val['user_id']
+            ),'user_name, mobile');
+            $order_list[$k]['address'] = $address['area'].$address['street'];
+            $order_list[$k]['user_name'] = $user['user_name'];
+            $order_list[$k]['mobile'] = $user['mobile'];
         }
         $status_info = $this->status_info($status);
         $title = "我的订单列表";

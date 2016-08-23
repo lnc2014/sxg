@@ -27,7 +27,7 @@ class Order extends BaseController{
                 'repair_assign' => $repair_assign,
             );
         }
-        $page_size = 10;//每页十条记录
+        $page_size = 30;//每页十条记录
         if(empty($page) || $page == 1){
             $page = 1;
             $limit = $page_size;
@@ -154,8 +154,7 @@ class Order extends BaseController{
         if(!empty($order['repair_pic'])){
             $pics = explode(';', $order['repair_pic']);
             foreach($pics as $value){
-//                $pic[] = 'http://'.$_SERVER['HTTP_HOST'].'/'.$value;
-                $pic[] = 'http://sxg.lnctime.com/'.$value;
+                $pic[] = 'http://'.$_SERVER['HTTP_HOST'].'/'.$value;
             }
             $data['pics'] = $pic;
         }

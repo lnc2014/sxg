@@ -53,8 +53,10 @@
  *
  * NOTE: If you change these, also change the error_reporting() code below
  */
-	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
-	define("ROOTPATH", str_replace("\\", "/", (realpath(dirname(__FILE__))).'/')) ;
+
+
+define('ENVIRONMENT', $_SERVER['HTTP_HOST']==='sxgapi.lnctime.com' ? 'production' : 'testing');
+define("ROOTPATH", str_replace("\\", "/", (realpath(dirname(__FILE__))).'/')) ;
 
 /*
  *---------------------------------------------------------------
@@ -70,7 +72,6 @@ switch (ENVIRONMENT)
 		error_reporting(-1);
 		ini_set('display_errors', 1);
 	break;
-
 	case 'testing':
 	case 'production':
 		ini_set('display_errors', 0);

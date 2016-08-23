@@ -72,7 +72,70 @@ $this->load->view('common/wx_header',array('title'=>$title));
         <textarea class="textarea_remark" placeholder="备注" id="remark"></textarea>
     </div>
     <div class="align_center">
-        <button class="btn btn_l" type="button" id="submit">下一步</button>
+        <button class="btn btn_l" type="button" id="submit">信息无误，立即报修</button>
+    </div>
+</div>
+
+<style>
+    .weui_mask {
+        position: fixed;
+        z-index: 1000;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: rgba(0, 0, 0, 0.6);
+    }
+    .weui_dialog {
+        position: fixed;
+        z-index: 5000;
+        width: 85%;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        background-color: #FAFAFC;
+        text-align: center;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+    .weui_dialog_hd {
+        padding: 1.2em 0 .5em;
+    }
+    .weui_dialog_bd {
+        padding: 0 20px;
+        font-size: 15px;
+        color: #888;
+        word-wrap: break-word;
+        word-break: break-all;
+    }
+    .weui_dialog_ft {
+        position: relative;
+        line-height: 42px;
+        margin-top: 20px;
+        font-size: 17px;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: flex;
+    }
+    .weui_dialog_ft a {
+        display: block;
+        -webkit-box-flex: 1;
+        -webkit-flex: 1;
+        flex: 1;
+        color: #eb3d00;
+        text-decoration: none;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+</style>
+<div class="weui_dialog_alert" id="show_order_detail" style="display: none">
+    <div class="weui_mask"></div>
+    <div class="weui_dialog">
+        <div class="weui_dialog_hd"><strong class="weui_dialog_title">报修成功</strong></div>
+        <div class="weui_dialog_bd">恭喜您，报修成功！请保持电话畅通，维修工程师会尽快跟您联系！</div>
+        <div class="weui_dialog_ft">
+            <a href="/index.php/sxg/my_order_list" class="weui_btn_dialog primary">确定</a>
+        </div>
     </div>
 </div>
 <input type="hidden" id="is_rand_point" value="1">
@@ -155,8 +218,10 @@ $this->load->view('common/wx_header',array('title'=>$title));
                 dataType: "json",
                 success: function(json){
                     if(json.result == '0000'){
-                        alert('恭喜你下单成功！');
-                        window.location = '/index.php/sxg/my_order_list';
+                        //
+                        $("#show_order_detail").css('display', 'block');
+//                        alert('恭喜您，报修成功！请保持电话畅通，维修工程师会尽快跟您联系！');
+//                        window.location = '/index.php/sxg/my_order_list';
                     }else {
                         alert(json.info);
                     }

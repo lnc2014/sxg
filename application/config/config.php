@@ -23,11 +23,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://adminsxg.me';
-$config['css_url'] = 'http://adminsxg.me/static/css';
-$config['js_url'] = 'http://adminsxg.me/static/js';
-$config['img_url'] = 'http://adminsxg.me/static/css';
-$config['static_url'] = 'http://adminsxg.me/static';
+if(ENVIRONMENT == 'production'){
+    $config['base_url'] = 'http://sxgapi.lnctime.com';
+    $config['css_url'] = 'http://sxgapi.lnctime.com/static/css';
+    $config['js_url'] = 'http://sxgapi.lnctime.com/static/js';
+    $config['img_url'] = 'http://sxgapi.lnctime.com/static/css';
+    $config['static_url'] = 'http://sxgapi.lnctime.com/static';
+}else{
+    $config['base_url'] = 'http://adminsxg.me';
+    $config['css_url'] = 'http://adminsxg.me/static/css';
+    $config['js_url'] = 'http://adminsxg.me/static/js';
+    $config['img_url'] = 'http://adminsxg.me/static/css';
+    $config['static_url'] = 'http://adminsxg.me/static';
+}
+
 
 /*
 |--------------------------------------------------------------------------

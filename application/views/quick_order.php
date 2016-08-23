@@ -37,15 +37,15 @@ $this->load->view('common/wx_header',array('title'=>$title));
     <div class="repair_devices full_width " id="repair" >
         <div class="repair_row border_bottom" >
             <div class="device">
-                <div class="color_base float_left name">报修机器1</div>
+                <div class="color_base float_left name">报修机器</div>
                 <img src="/static/wx/images/icon-arrow.png" class="float_right expend_mark">
             </div>
             <div class="device_detail">
-                <div style=" margin-left: 15px; margin-bottom: -3px;color: red;">品牌和型号不是必填项*</div>
+                <div style=" margin-left: 15px; margin-bottom: -3px;color: red;">品牌和型号是必填项*</div>
                 <div class="detail_row border_bottom">
-                    <input type="text" placeholder="机器品牌" name="brand"  id='brand1' class="color_base input">
-                    <input type="text" placeholder="机器型号" name="model"  id='model1' class="color_base input input2">
-                    <div><label><input type="checkbox" id="problem1">&nbsp;&nbsp;加粉（加墨）</label></div>
+                    <input type="text" placeholder="机器品牌" value="<?php if(!empty($user['last_band'])){echo $user['last_band'];}?>" name="brand"  id='brand1' class="color_base input">
+                    <input type="text" placeholder="机器型号" value="<?php if(!empty($user['last_model'])){echo $user['last_model'];}?>" name="model"  id='model1' class="color_base input input2">
+                    <div><label><input type="checkbox"  id="problem1">&nbsp;&nbsp;加粉（加墨）</label></div>
                 </div>
                 <div class="detail_row border_bottom">
                     <div><label><input type="checkbox" id="problem2" name="isAddPowder">&nbsp;&nbsp;打印质量差（需拍照上传质量差页）</label></div>
@@ -70,8 +70,8 @@ $this->load->view('common/wx_header',array('title'=>$title));
         </div>
     </div>
     <div class="addDevice_row">
-        <button type="button" class="btn_addDevice" onclick="addDevice()">添加报修机器</button>
-        <button type="button" class="btn_addDevice" onclick="delDevice()">删除报修机器</button>
+<!--        <button type="button" class="btn_addDevice" onclick="addDevice()">添加报修机器</button>-->
+<!--        <button type="button" class="btn_addDevice" onclick="delDevice()">删除报修机器</button>-->
     </div>
     <input type="hidden" id="is_problem1" value="0">
     <input type="hidden" id="is_problem2" value="0">
@@ -83,6 +83,38 @@ $this->load->view('common/wx_header',array('title'=>$title));
     <div class="align_center">
 <!--        <a href="/index.php/sxg/order_detail"><button class="btn btn_l" type="button">下一步</button></a>-->
         <button class="btn btn_l" type="button" id="submit_order">下一步</button>
+    </div>
+</div>
+<style>
+    .weui_toast {
+        position: fixed;
+        z-index: 50000;
+        width: 7.6em;
+        min-height: 7.6em;
+        top: 180px;
+        left: 50%;
+        margin-left: -3.8em;
+        background: rgb(235, 61, 0);
+        text-align: center;
+        border-radius: 5px;
+        color: #FFFFFF;
+    }
+    .weui_mask {
+        position: fixed;
+        z-index: 1000;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: rgba(0, 0, 0, 0.6);
+    }
+</style>
+<div id="upload_pics" class="weui_loading_toast" style="display: none;">
+    <div class="weui_mask_transparent"></div>
+    <div class="weui_mask"></div>
+    <div class="weui_toast">
+        <img src="/static/wx/images/loading.gif" style="width: 92px;height: 100px;">
+        <p style=" font-size: 15px;"class="weui_toast_content">图片正在上传</p>
     </div>
 </div>
 <script type="text/javascript" src="/static/wx/js/zepto.min.js"></script>
@@ -158,34 +190,37 @@ $this->load->view('common/wx_header',array('title'=>$title));
             var brand1 = $("#brand1").val();
             var model1 = $("#model1").val();
             var description1 = $("#description").val();
-//            if(!brand1){
-//                alert('机器名牌不能为空');
-//                return;
-//            }
-//            if(!model1){
-//                alert('机器型号不能为空');
-//                return;
-//            }
+            if(!brand1){
+                alert('机器名牌不能为空');
+                return;
+            }
+            if(!model1){
+                alert('机器型号不能为空');
+                return;
+            }
             if(!description1 && (problem1 == 0) && (problem2 == 0)&& (problem3 == 0)&& (problem4 == 0) ){
                 alert('需要维修的问题不能为空');
                 return;
             }
+            sub_problem1 = '';
+            sub_problem2 = '';
+            sub_problem3 = '';
+            sub_problem4 = '';
             if(problem1 == 1){
-                problem1 = '0001' + ',';
+                var sub_problem1 = '0001' + ',';
             }
             if(problem2 == 1){
-                problem2 = '0002' + ',';
+                var sub_problem2 = '0002' + ',';
             }
             if(problem3 == 1){
-                problem3 = '0003' + ',';
+                var sub_problem3 = '0003' + ',';
             }
             if(problem4 == 1){
-                problem4 = '0004' + ',';
+                var sub_problem4 = '0004' + ',';
             }
             var img1 = $('#img1').val();
             var img2 = $('#img2').val();
             var img3 = $('#img3').val();
-
             if(img1){
                 img1 = img1 + ';';
             }
@@ -196,8 +231,7 @@ $this->load->view('common/wx_header',array('title'=>$title));
                 img3 = img3 + ';';
             }
             var img = img1 + img2 + img3;
-            console.log(img);
-            var repair_option = problem1 +   problem2 +  problem3 + problem4;//附加规则
+            var repair_option = sub_problem1 +   sub_problem2 +  sub_problem3 + sub_problem4;//附加规则
             $.ajax({
                 type: "POST",
                 url: "/index.php/sxg/add_order",
@@ -333,7 +367,7 @@ $this->load->view('common/wx_header',array('title'=>$title));
                     '</div>';
                 $('.div_images').append(html);
                 $('#img'+images).val(data.data.path2);
-                $('#is_upload').text('');
+                $('#upload_pics').css('display', 'none');
             }
         });
         // 文件上传失败，现实上传出错。
@@ -342,7 +376,7 @@ $this->load->view('common/wx_header',array('title'=>$title));
             destroy();
         });
         uploader.on( 'uploadProgress', function() {
-            $('#is_upload').text('正在上传.....');
+            $('#upload_pics').css('display', 'block');
         });
     });
     $(function(){

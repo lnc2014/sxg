@@ -56,7 +56,7 @@ $base_img_url = $this->config->item('img_url');
             <input type="text" class="input_qh" placeholder="请输入联系人电话"  value="<?php echo empty($address['mobile']) ?'':$address['mobile']?>" name="input_tel" id="mobile" >
         </div>
         <div class="div_default_addr">
-            <label class="color_base"><input type="radio" name="input_default_addr" value="1" id="default">设为默认地址</label>
+            <label class="color_base" style="font-size: 18px;"><input type="radio" style="margin-top: 10px;" name="input_default_addr" value="1" id="default">设为默认地址</label>
         </div>
     </div>
     <div class="btn_oprs align_center">
@@ -70,7 +70,7 @@ $base_img_url = $this->config->item('img_url');
 <script type="text/javascript" src="/static/wx/js/citySelect.js"></script>
 <script type="text/javascript">
     $(function(){
-        $(".addr_city").citySelect({ url:'/static/wx/js/city.json', prov:'', city:'', dist:'', required:false, nodata:'none' });
+        $(".addr_city").citySelect({ url:'/static/wx/js/city.json', prov:'广东', city:'深圳', dist:'', required:false, nodata:'none' });
     });
     $(function(){
         $("#man").click(function () {
