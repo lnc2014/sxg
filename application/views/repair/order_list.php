@@ -13,20 +13,20 @@ $this->load->view('common/repair_header',array('title'=>$title));
         <div class="bd" style="height: 100%;">
             <div class="weui_tab">
                 <div class="weui_navbar">
-                    <div class="weui_navbar_item weui_bar_item_on">
-                        <a href="/user/order_list/8" style="text-decoration:none;color:#171616;">全部</a>
+                    <div class="weui_navbar_item <?php if(empty($status)){ echo 'weui_bar_item_on';}?>">
+                        <a href="/index.php/repair/repair/order_list" style="text-decoration:none;color:#171616;">全部</a>
                     </div>
-                    <div class="weui_navbar_item ">
-                        <a href="/user/order_list/10" style="text-decoration:none;color:#171616;">待上门</a>
+                    <div class="weui_navbar_item <?php if($status == 2){ echo 'weui_bar_item_on';}?>">
+                        <a href="/index.php/repair/repair/order_list/2" style="text-decoration:none;color:#171616;">待上门</a>
                     </div>
-                    <div class="weui_navbar_item ">
-                        <a href="/user/order_list/7 " style="text-decoration:none;color:#171616;">维修中</a>
+                    <div class="weui_navbar_item <?php if($status == 3){ echo 'weui_bar_item_on';}?>">
+                        <a href="/index.php/repair/repair/order_list/3" style="text-decoration:none;color:#171616;">维修中</a>
                     </div>
-                    <div class="weui_navbar_item ">
-                        <a href="/user/order_list/7 " style="text-decoration:none;color:#171616;">已结束</a>
+                    <div class="weui_navbar_item <?php if($status == 7){ echo 'weui_bar_item_on';}?>">
+                        <a href="/index.php/repair/repair/order_list/7" style="text-decoration:none;color:#171616;">已结束</a>
                     </div>
-                    <div class="weui_navbar_item ">
-                        <a href="/user/order_list/7 " style="text-decoration:none;color:#171616;">已取消</a>
+                    <div class="weui_navbar_item <?php if($status == 8){ echo 'weui_bar_item_on';}?>">
+                        <a href="/index.php/repair/repair/order_list/8" style="text-decoration:none;color:#171616;">已取消</a>
                     </div>
                 </div>
             </div>
@@ -97,7 +97,7 @@ $this->load->view('common/repair_header',array('title'=>$title));
                             if($order['status'] == 1 || $order['status'] == 2){?>
                                 <a class="weui_btn" style="width:50%;margin-top: 0;background-color:#f48000" id="reg">我已到达</a>
                             <?php }else if($order['status'] == 5 || $order['status'] == 3 || $order['status'] == 4){?>
-                                <a class="weui_btn" style="width:50%;margin-top: 0;background-color:#f48000" id="reg">调配件</a>
+                                <a href="/index.php/repair/repair/fill_repair_order/<?php echo $order['id']?>" class="weui_btn" style="width:50%;margin-top: 0;background-color:#f48000" id="reg">调配件</a>
                             <?php }elseif($order['status'] == 6) {?>
                                 <a class="weui_btn" style="width:50%;margin-top: 0;background-color:#f48000" id="reg">待点评</a>
                             <?php }?>

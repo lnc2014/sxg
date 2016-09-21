@@ -206,7 +206,19 @@ $this->load->view('common/footer_js');
      var repair_assign = $('#repair_assign').val();
      window.location.href = '/index.php/admin/order/index?page=<?php echo $page?>&repair_assign='+repair_assign;
  }
-
+$(function(){
+    $("#test").live('click',function(){
+        alert(222);
+    });
+    $("#test").imgbox({
+        'speedIn'		: 0,
+        'speedOut'		: 0,
+        'alignment'		: 'center',
+        'overlayShow'	: true,
+        'allowMultiple'	: false,
+        'autoScale'	: true
+    });
+});
 function order_detail(order_id){
         $.ajax({
             type: "POST",
@@ -226,11 +238,25 @@ function order_detail(order_id){
                     $("#phone").text(data.phone);
                     $("#address").text(data.address);
                     $.each(data.pics, function(item, value){
-                        var html = '<img src="'+value+'" width="150px" height="300px">';
+                        var html = '<a id="test" href="'+value+'" title="" ><img  src="'+value+'" width="150px" height="300px"></a>';
                         $('#pics').append(html);
                     });
                     $("#all_hidden").css('display','block');
                     $("#order_detail").css('display','block');
+                    $(function(){
+                        $("#test").click(function(){
+                            alert(222);
+                        });
+                        $("#test").imgbox({
+                            'speedIn'		: 0,
+                            'speedOut'		: 0,
+                            'alignment'		: 'center',
+                            'overlayShow'	: true,
+                            'allowMultiple'	: false,
+                            'autoScale'	: true
+                        });
+                    });
+
                 }else {
                     alert(json.info);
                 }
@@ -239,7 +265,6 @@ function order_detail(order_id){
                 alert('加载失败');
             }
         });
-
 }
  function hidden_order_detail(){
      $("#all_hidden").css('display','none');

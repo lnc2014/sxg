@@ -24,11 +24,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 if(ENVIRONMENT == 'production'){
-    $config['base_url'] = 'http://sxgapi.lnctime.com';
-    $config['css_url'] = 'http://sxgapi.lnctime.com/static/css';
-    $config['js_url'] = 'http://sxgapi.lnctime.com/static/js';
-    $config['img_url'] = 'http://sxgapi.lnctime.com/static/css';
-    $config['static_url'] = 'http://sxgapi.lnctime.com/static';
+    $config['base_url'] = 'http://wx.shanxiuge.com';
+    $config['css_url'] = 'http://wx.shanxiuge.com/static/css';
+    $config['js_url'] = 'http://wx.shanxiuge.com/static/js';
+    $config['img_url'] = 'http://wx.shanxiuge.com/static/css';
+    $config['static_url'] = 'http://wx.shanxiuge.com/static';
 }else{
     $config['base_url'] = 'http://adminsxg.me';
     $config['css_url'] = 'http://adminsxg.me/static/css';

@@ -15,13 +15,18 @@ class repair extends repairBaseController{
     public function index(){
         if(!$this->check_is_login()){
             redirect('/repair/repair/login');
-        };
+        }else{
+            redirect('/repair/repair/repair_msg');
+        }
     }
     /**
      * 登录
      */
     public function login(){
         $this->data['title'] = '登录';
+        if($this->check_is_login()) {
+            redirect('/repair/repair/repair_msg');
+        }
         $this->load->view('repair/login', $this->data);
     }
     //登录验证
@@ -100,6 +105,12 @@ class repair extends repairBaseController{
         if(!$this->check_is_login()){
             redirect('repair/repair/login');
         }
+        //检测是不是已经填写过资料，如果没有填写过资料的话，就填写资料
+        $this->load->model('admin/sxg_repair_user');
+        $repair = $this->sxg_repair_user->get_one(array('repair_user_id' => $_SESSION['repair_user_id']));
+        if(!empty($repair['id_card']) && !empty($repair['bank_card_no']) && !empty($repair['id_card_pic'])){
+            redirect('repair/repair/repair_status');
+        }
         $this->load->library('Jssdk');
         $this->data['sign_package'] = $this->jssdk->getSignPackage();
         $this->load->view('repair/repair_info', $this->data);
@@ -108,6 +119,10 @@ class repair extends repairBaseController{
     public function fill_repair_info(){
         if(!$this->check_is_login()){
             echo $this->apiReturn('0005', new stdClass(), '你尚未登录，请先登录！');
+            return;
+        }
+        if(!$this->check_is_used()){
+            echo $this->apiReturn('0006', new stdClass(), '你尚未通过审核！');
             return;
         }
         $repair_info = $this->input->post();
@@ -136,6 +151,21 @@ class repair extends repairBaseController{
         unset($repair_info['area']);
         unset($repair_info['street']);
         $repair_info['address_id'] = $address_id;
+        //处理一步，将上传到微信服务器的图片下载到本地服务器
+        $path = APPPATH."cache/sxg_access_token.json";
+        if (file_exists($path)) {
+            $data = json_decode(file_get_contents($path));
+            $access_token = $data->access_token;
+        } else {
+            $access_token = 0;
+        }
+        if(empty($access_token)){
+            echo $this->apiReturn('0002', new stdClass(), '微信授权错误');
+            return;
+        }
+        $repair_info['id_card_pic_face'] = $this->get_image_from_wx($access_token, $repair_info['id_card_pic_face']);
+        $repair_info['id_card_pic_fan'] = $this->get_image_from_wx($access_token, $repair_info['id_card_pic_fan']);
+        $repair_info['qualification_pic'] = $this->get_image_from_wx($access_token, $repair_info['qualification_pic']);
         $repair = $this->sxg_repair_user->update($repair_info, array('repair_user_id' => $_SESSION['repair_user_id']));
         if($repair){
             echo $this->apiReturn('0000', new stdClass(), '添加成功');
@@ -145,11 +175,36 @@ class repair extends repairBaseController{
             return;
         }
     }
+
+    /**
+     * 从微信下载图片到服务器
+     */
+    private function get_image_from_wx($access_token, $media_id){
+        $image_url = "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token={$access_token}&media_id={$media_id}";
+        $image = file_get_contents($image_url);
+        $image_name = date("YmdHis").".jpg";
+        $savename = ROOTPATH."static/upload/".date('Ymd').'/';
+        if(!file_exists($savename))
+        {
+            mkdir($savename);
+            chmod($savename,0777);
+        }
+        $db_path = "static/upload/".date('Ymd').'/'.$image_name;
+        $path = ROOTPATH."static/upload/".date('Ymd').'/'.$image_name;
+        file_put_contents($path, $image);
+        return $db_path;
+    }
     /**
      * 维修工状态
      */
     public function repair_status(){
         $this->data['title'] = '账号状态';
+        if(!$this->check_is_login()){
+            redirect('repair/repair/login');
+        }
+        if($this->check_is_used()){
+            redirect('repair/repair/repair_msg');
+        }
         $this->load->view('repair/repair_status', $this->data);
     }
     /**
@@ -159,6 +214,9 @@ class repair extends repairBaseController{
         $this->data['title'] = '个人中心';
         if(!$this->check_is_login()){
             redirect('repair/repair/login');
+        }
+        if(!$this->check_is_used()){
+            redirect('repair/repair/repair_status');
         }
         $this->load->model('admin/sxg_repair_user');
         $repair = $this->sxg_repair_user->get_one(array('repair_user_id' => $_SESSION['repair_user_id']));
@@ -173,6 +231,12 @@ class repair extends repairBaseController{
      */
     public function find_repair_psw(){
         $this->data['title'] = '找回密码';
+//        if(!$this->check_is_login()){
+//            redirect('repair/repair/login');
+//        }
+//        if(!$this->check_is_used()){
+//            redirect('repair/repair/repair_status');
+//        }
         $this->load->view('repair/find_repair_psw', $this->data);
     }
     //找回密码
@@ -210,30 +274,44 @@ class repair extends repairBaseController{
      * 找回密码
      */
     public function repair_msg(){
-        $this->data['title'] = '信息中心';
+        $this->data['title'] = '接单中心';
+        if(!$this->check_is_login()){
+            redirect('repair/repair/login');
+        }
+        if(!$this->check_is_used()){
+            redirect('repair/repair/repair_status');
+        }
+        $this->load->model('admin/sxg_order');
+        $orders = $this->sxg_order->get_repair_order_list($_SESSION['repair_user_id'], 1);
+        $this->data['orders'] = $orders;
         $this->load->view('repair/repair_msg', $this->data);
     }
-
     /**
      * 订单列表
      */
-    public function order_list(){
+    public function order_list($status = ''){
         $this->data['title'] = '订单列表';
         if(!$this->check_is_login()){
             redirect('repair/repair/login');
         }
+        if(!$this->check_is_used()){
+            redirect('repair/repair/repair_status');
+        }
         $this->load->model('admin/sxg_order');
-        $orders = $this->sxg_order->get_repair_order_list($_SESSION['repair_user_id']);
+        $orders = $this->sxg_order->get_repair_order_list($_SESSION['repair_user_id'], $status);
         $this->data['orders'] = $orders;
+        $this->data['status'] = $status;
         $this->load->view('repair/order_list', $this->data);
     }
-
     /**
      * 订单详情
      */
     public function order_detail($order_id){
         if(!$this->check_is_login()){
             redirect('repair/repair/login');
+        }
+        if(!$this->check_is_used()){
+            redirect('repair/repair/repair_status');
         }
         if(empty($order_id)){
             echo '<script>alert("订单信息不存在");history.go(-1);</script>';
@@ -250,24 +328,23 @@ class repair extends repairBaseController{
             echo '<script>alert("订单信息不存在");history.go(-1);</script>';
             exit;
         }
-        $repair_info = array();
-        if(!empty($order['repair_info_id']) && $order['order_status'] == 7){
-            $this->load->model('admin/sxg_repair_info');
-            $repair_info = $this->sxg_repair_info->get_one(array(
-                'repair_info_id' => $order['repair_info_id']
-            ));
-        }
+        $this->load->model('admin/sxg_repair_info');
+        $repair_info = $this->sxg_repair_info->get_one(array(
+            'order_id' => $order_id
+        ));
         $this->data['order'] = $order;
         $this->data['repair_info'] = $repair_info;
         $this->load->view('repair/order_detail', $this->data);
     }
-
     /**
      * 填写维修订单
      */
     public function fill_repair_order($order_id){
         if(!$this->check_is_login()){
             redirect('repair/repair/login');
+        }
+        if(!$this->check_is_used()){
+            redirect('repair/repair/repair_status');
         }
         if(empty($order_id)){
             echo '<script>alert("订单信息不存在");history.go(-1);</script>';
@@ -283,15 +360,53 @@ class repair extends repairBaseController{
             echo '<script>alert("订单信息不存在");history.go(-1);</script>';
             exit;
         }
-
         $this->data['title'] = '填写维修订单';
+        $this->data['order_id'] = $order_id;
         $this->load->view('repair/fill_repair_order', $this->data);
+    }
+    //填写配件的接口
+    public function fill_repair_order_data(){
+        $order_id = $this->input->post('order_id', true);
+        $data = $this->input->post();
+        if(!$this->check_is_login()){
+            echo $this->apiReturn('0005', new stdClass(), '你尚未登录，请先登录！');
+            return;
+        }
+        if(!$this->check_is_used()){
+            echo $this->apiReturn('0005', new stdClass(), '你的账号正在审核中');
+            return;
+        }
+        if(empty($order_id) || empty($data)){
+            echo $this->apiReturn('0003', new stdClass(), '订单ID不能为空');
+            return;
+        }
+        $this->load->model('admin/sxg_order');
+        $this->load->model('admin/sxg_repair_info');
+        $order = $this->sxg_order->get_repair_order_detail($order_id);
+        if(empty($order)){
+            echo $this->apiReturn('0004', new stdClass(), '订单信息不存在');
+            return;
+        }
+        $data['create_time'] = $data['update_time'] = time();
+        $repair_info_id = $this->sxg_repair_info->add($data);
+
+        if($repair_info_id > 0 ){
+            echo $this->apiReturn('0000', new stdClass(), '添加成功');
+            return;
+        }else{
+            echo $this->apiReturn('0002', new stdClass(), '添加失败');
+            return;
+        }
     }
     //结束维修的接口
     public function finish_repair(){
         $order_id = $this->input->post('order_id', true);
         if(!$this->check_is_login()){
             echo $this->apiReturn('0005', new stdClass(), '你尚未登录，请先登录！');
+            return;
+        }
+        if(!$this->check_is_used()){
+            echo $this->apiReturn('0005', new stdClass(), '你的账号正在审核中');
             return;
         }
         if(empty($order_id)){
@@ -315,6 +430,38 @@ class repair extends repairBaseController{
             return;
         }
     }
+    //维修人员接单的接口
+    public function get_order(){
+        $order_id = $this->input->post('order_id', true);
+        if(!$this->check_is_login()){
+            echo $this->apiReturn('0005', new stdClass(), '你尚未登录，请先登录！');
+            return;
+        }
+        if(!$this->check_is_used()){
+            echo $this->apiReturn('0005', new stdClass(), '你的账号正在审核中');
+            return;
+        }
+        if(empty($order_id)){
+            echo $this->apiReturn('0003', new stdClass(), '订单ID不能为空');
+            return;
+        }
+        $this->load->model('admin/sxg_order');
+        $order = $this->sxg_order->get_repair_order_detail($order_id);
+        if(empty($order)){
+            echo $this->apiReturn('0004', new stdClass(), '订单信息不存在');
+            return;
+        }
+        $update = $this->sxg_order->update(array(
+            'status' => 2
+        ),array('id' => $order_id));
+        if($update){
+            echo $this->apiReturn('0000', new stdClass(), '修改成功');
+            return;
+        }else{
+            echo $this->apiReturn('0002', new stdClass(), '修改失败');
+            return;
+        }
+    }
     /**
      * 评价
      */
@@ -322,7 +469,6 @@ class repair extends repairBaseController{
         $this->data['title'] = '评价';
         $this->load->view('repair/rate_repair', $this->data);
     }
-
     /**
      * 退出登录
      */

@@ -67,13 +67,15 @@ class BaseModel extends CI_Model{
      * @param int 	 $offset
      * @return array
      */
-    public function get_list($where = NULL, $fields='*', $limit=NULL, $offset=NULL)
+    public function get_list($where = '', $fields='*', $limit = '', $offset = '', $order = '')
     {
         $this->db->select($fields);
         if(!empty($where)){
             $this->db->where($where);
         }
-        $this->db->order_by('id', 'DESC');
+        if(!empty($order)){
+            $this->db->order_by($order, 'DESC');
+        }
         $query = $this->db->get($this->_tablename, $limit, $offset);
         return $query->result_array();
     }

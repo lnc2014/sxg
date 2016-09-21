@@ -10,11 +10,14 @@ $this->load->view('common/wx_header',array('title'=>$title));
 <style>
     input[type='checkbox'] { margin-right: -0.3em; margin-top: -0.1em; background: url(/static/wx/images/unchecked.png) no-repeat; background-size: 100% 100%; }
     input[type='checkbox']:checked { background: url(/static/wx/images/checked.png) no-repeat; background-size: 100% 100%; }
+
     .div_images .img_li.add_li {
         background: url(/static/wx/images/add.png) no-repeat;
         background-size: 100% 100%;
     }
 </style>
+<!--引入wenupload CSS-->
+<link rel="stylesheet" type="text/css" href="/static/wx/webupload/webuploader.css">
 <body>
 <div class="container cw">
     <div class="select_row border_bottom">
@@ -42,11 +45,20 @@ $this->load->view('common/wx_header',array('title'=>$title));
                 <div class="detail_row border_bottom">
                     <input type="text" placeholder="机器品牌" value="<?php if(!empty($user['last_band'])){echo $user['last_band'];}?>" name="brand"  id='brand1' class="color_base input">
                     <input type="text" placeholder="机器型号" value="<?php if(!empty($user['last_model'])){echo $user['last_model'];}?>" name="model"  id='model1' class="color_base input input2">
+<!--                    <div><label><input type="checkbox"  id="problem1">&nbsp;&nbsp;加粉（加墨）</label></div>-->
                 </div>
-
+<!--                <div class="detail_row border_bottom">-->
+<!--                    <div><label><input type="checkbox" id="problem2" name="isAddPowder">&nbsp;&nbsp;打印质量差（需拍照上传质量差页）</label></div>-->
+<!--                </div>-->
+<!--                <div class="detail_row border_bottom">-->
+<!--                    <div><label><input type="checkbox" id="problem3" name="isAddPowder">&nbsp;&nbsp;不能开机</label></div>-->
+<!--                </div>-->
+<!--                <div class="detail_row border_bottom detail_rowl">-->
+<!--                    <div><label><input type="checkbox" id="problem4" name="isAddPowder">&nbsp;&nbsp;卡纸(卡纸的位置需拍照上传或详细说明)</label></div>-->
+<!--                </div>-->
                 <div class="detail_row">
                     <div style="color: red;">请对机器故障进行描述:</div><br>
-                    <textarea class="description" id="description"  placeholder="例如：打印文字迹偏淡"></textarea>
+                    <textarea class="description" id="description"  placeholder=""></textarea>
                     <p  style="color: red;">请拍照上传故障打印页:</p>
                     <div class="div_images">
                         <div class="img_li add_li float_left">
@@ -58,6 +70,10 @@ $this->load->view('common/wx_header',array('title'=>$title));
             </div>
         </div>
     </div>
+<!--    <div class="addDevice_row">-->
+<!--        <button type="button" class="btn_addDevice" onclick="addDevice()">添加报修机器</button>-->
+<!--        <button type="button" class="btn_addDevice" onclick="delDevice()">删除报修机器</button>-->
+<!--    </div>-->
     <input type="hidden" id="is_problem1" value="0">
     <input type="hidden" id="is_problem2" value="0">
     <input type="hidden" id="is_problem3" value="0">
@@ -65,15 +81,46 @@ $this->load->view('common/wx_header',array('title'=>$title));
     <input type="hidden" id="img1" value="">
     <input type="hidden" id="img2" value="">
     <input type="hidden" id="img3" value="">
-    <input type="hidden" id="imgshow1" value="">
-    <input type="hidden" id="imgshow2" value="">
-    <input type="hidden" id="imgshow3" value="">
-    <div class="align_center" style="margin-top: 56px;">
+    <div class="align_center">
+<!--        <a href="/index.php/sxg/order_detail"><button class="btn btn_l" type="button">下一步</button></a>-->
         <button class="btn btn_l" type="button" id="submit_order">下一步</button>
+    </div>
+</div>
+<style>
+    .weui_toast {
+        position: fixed;
+        z-index: 50000;
+        width: 7.6em;
+        min-height: 7.6em;
+        top: 180px;
+        left: 50%;
+        margin-left: -3.8em;
+        background: rgb(235, 61, 0);
+        text-align: center;
+        border-radius: 5px;
+        color: #FFFFFF;
+    }
+    .weui_mask {
+        position: fixed;
+        z-index: 1000;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: rgba(0, 0, 0, 0.6);
+    }
+</style>
+<div id="upload_pics" class="weui_loading_toast" style="display: none;">
+    <div class="weui_mask_transparent"></div>
+    <div class="weui_mask"></div>
+    <div class="weui_toast">
+        <img src="/static/wx/images/loading.gif" style="width: 92px;height: 100px;">
+        <p style=" font-size: 15px;"class="weui_toast_content">图片正在上传</p>
     </div>
 </div>
 <script type="text/javascript" src="/static/wx/js/zepto.min.js"></script>
 <script type="text/javascript" src="/static/wx/js/jquery.1.71.js"></script>
+<script type="text/javascript" src="/static/wx/webupload/webuploader.js"></script>
 <script type="text/javascript">
     var i = 1;
     $(".repair_devices").on("click",'.device',function(){
@@ -172,10 +219,9 @@ $this->load->view('common/wx_header',array('title'=>$title));
             if(problem4 == 1){
                 var sub_problem4 = '0004' + ',';
             }
-
-            var img1 = $('#imgshow1').val();
-            var img2 = $('#imgshow2').val();
-            var img3 = $('#imgshow3').val();
+            var img1 = $('#img1').val();
+            var img2 = $('#img2').val();
+            var img3 = $('#img3').val();
             if(img1){
                 img1 = img1 + ';';
             }
@@ -216,151 +262,139 @@ $this->load->view('common/wx_header',array('title'=>$title));
         });
 
     });
+    function delDevice(){
+        var currentSize = $(".repair_row").size();
+        if(currentSize == 1){
+            alert("最少要有一个报修机器");
+            return;
+        }else {
+            $('#repair'+currentSize).remove();
+            i = i -1;
+        }
+    }
+    function addDevice(){
+        if(i >= 3){
+            alert("最多添加三个报修机器");
+            return;
+        }
+        i = i +1;
+        console.log(i);
+        var html = '<div class="repair_row shrink border_bottom" id="repair'+i+ '">'+
+            '<div class="device">'+
+            '<div class="color_base float_left name">报修机器'+i+ '</div>'+
+            '<img src="/static/wx/images/icon-arrow.png" class="float_right expend_mark">'+
+            '</div>'+
+            '<div class="device_detail">'+
+            '<div class="detail_row border_bottom">'+
+            '<input type="text" placeholder="机器品牌" name="brand" id ="brand" class="color_base input">'+
+            '<input type="text" placeholder="机器型号" name="model"  id ="model"  class="color_base input input2">'+
+            '<div><label><input type="checkbox" value="1" name="isAddPowder">&nbsp;&nbsp;加粉（加墨）</label></div>'+
+            '</div>'+
+            '<div class="detail_row border_bottom">'+
+            '<div><label><input type="checkbox" value="2" name="isAddPowder">&nbsp;&nbsp;打印质量差（需拍照上传质量差页）</label></div>'+
+            '</div>'+
+            '<div class="detail_row border_bottom">'+
+            '<div><label><input type="checkbox" value="3" name="isAddPowder">&nbsp;&nbsp;不能开机</label></div>'+
+            '</div>'+
+            '<div class="detail_row border_bottom detail_rowl">'+
+            '<div><label><input type="checkbox" value="4" name="isAddPowder">&nbsp;&nbsp;卡纸(卡纸的位置需拍照上传或详细说明)</label></div>'+
+            '</div>'+
+            '<div class="detail_row">'+
+            '<textarea class="description" placeholder="如非上述四项问题，请在这里描述" id="other"></textarea>'+
+            '<p>上传照片</p>'+
+            '<div class="div_images">'+
+            '<div class="img_li float_left">'+
+            '<img src="/static/images/add.png" class="full_width full_height">'+
+            '</div>'+
+            '<div class="img_li float_left">'+
+            '<img src="/static/images/add.png" class="full_width full_height">'+
+            '</div>'+
+            '</div>'+
+            '</div>'+
+            '</div>'+
+            '</div>';
+            var test = "repair_"+ (i-1);
+            if(i == 2){
+                $('#repair').after(html);
+            }else{
+                $('#repair2').after(html);
+            }
 
+            $(".repair_row").addClass('shrink');
+    }
 </script>
 <!--上次图片-->
-<script type="text/javascript" src="/static/wx/js/jweixin-1.0.0.js"></script>
 <script>
-    wx.config({
-        debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-        appId: '<?php echo $sign_package['appId']?>', // 必填，公众号的唯一标识
-        timestamp:<?php echo $sign_package['timestamp']?> , // 必填，生成签名的时间戳
-        nonceStr: '<?php echo $sign_package['nonceStr']?>', // 必填，生成签名的随机串
-        signature: '<?php echo $sign_package['signature']?>',// 必填，签名，见附录1
-        jsApiList: [
-            "chooseImage",
-            "previewImage",
-            "uploadImage"
-        ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-    });
-    //上传身份证正面
-    var img = 0;
-    $('#file_upload').on('click', function () {
-        wx.chooseImage({
-            count: 3, // 默认9
-            sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-            sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-            success: function (res) {
-                var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-                if(!localIds){
-                    alert('上传失败');
-                    return;
-                }
-                var i = 0; var length = localIds.length;
-                var upload = function() {
-                    if(img >= 3 ){
-                        alert('最多只能上传三张图片');
-                        return;
-                    }
-                    wx.uploadImage({
-                        localId:localIds[i],
-                        success: function(res) {
-                            //如果还有照片，继续上传
-                            var serverId = res.serverId; // 返回图片的服务器端ID
-                            $.ajax({
-                                type: "POST",
-                                url: "/index.php/sxg/save_pic_to_server",
-                                data: {
-                                    media_id : serverId
-                                },
-                                dataType: "json",
-                                success: function(json){
-                                    if(json.result == '0000'){
-                                        $('#imgshow'+img).val(json.data);
-                                        $('#img'+img).val(json.data);
-                                    }else{
-                                        alert(json.info);
-                                    }
-                                },
-                                error: function(){
-                                    alert("加载失败");
-                                }
-                            });
-                            img = img + 1;
-                            var html = '<div class="img_li float_left"  id="show_img'+img+'">'+
-                                '<img src="'+localIds[i]+'" class="full_width full_height" id="img_show'+img+'">'+
-                                '<img src="/static/wx/images/close.png" class="close1" id="del_img'+img+'">'+
-                                '</div>';
-                            $('.div_images').append(html);
-                            $('#upload_pics').css('display', 'none');
-                            i++;
-                            if (i < length) {
-                                upload();
-                            }
-                        }
-                    });
-                };
-                upload();
+    var images = 0;
+    // 图片上传demo
+    jQuery(function() {
+        var $ = jQuery,
+        // Web Uploader实例
+            uploader;
+        // 初始化Web Uploader
+        uploader = WebUploader.create({
+            // 自动上传。
+            auto: true,
+            // swf文件路径
+            swf: '/static/webupload/Uploader.swf',
+            // 文件接收服务端。
+            server: '/index.php/sxg/upload',
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: '#file_upload',
+            // 只允许选择文件，可选。
+            accept: {
+                title: 'Images',
+                extensions: 'gif,jpg,jpeg,bmp,png',
+                mimeTypes: 'image/*'
             }
         });
-    });
 
+        uploader.on( 'fileQueued', function() {
+            if(images >= 3){
+                alert('最多只能上传三张图片');
+                destroy();
+                return;
+            }
+        });
+        // 文件上传成功，给item添加成功class, 用样式标记上传成功。
+        uploader.on( 'uploadSuccess', function( file, data ) {
+            if(data.result == '0000'){
+                images = images + 1;
+                alert('上传成功');
+                var html = '<div class="img_li float_left"  id="show_img'+images+'">'+
+                    '<img src="'+data.data.path+'" class="full_width full_height">'+
+                    '<img src="/static/wx/images/close.png" class="close1" id="del_img'+images+'">'+
+                    '</div>';
+                $('.div_images').append(html);
+                $('#img'+images).val(data.data.path2);
+                $('#upload_pics').css('display', 'none');
+            }
+        });
+        // 文件上传失败，现实上传出错。
+        uploader.on( 'uploadError', function( file, data) {
+            alert(data.info);
+            destroy();
+        });
+        uploader.on( 'uploadProgress', function() {
+            $('#upload_pics').css('display', 'block');
+        });
+    });
     $(function(){
         $("#del_img1").live("click",function(){
             $('#show_img1').remove();
-            var img3 = $('#img3').val();
-            var imgshow3 = $('#imgshow3').val();
-            $('#img1').val(img3);
-            $('#imgshow1').val(imgshow3);
-            $('#img3').val('');
-            $('#imgshow3').val('');
-            img = img - 1;
+            $('#img1').val('');
+            images = images - 1;
         });
         $("#del_img2").live("click",function(){
             $('#show_img2').remove();
-            var img3 = $('#img3').val();
-            var imgshow3 = $('#imgshow3').val();
-            $('#img2').val(img3);
-            $('#imgshow2').val(imgshow3);
-            $('#img3').val('');
-            $('#imgshow3').val('');
-            img = img - 1;
+            $('#img2').val('');
+            images = images - 1;
         });
         $("#del_img3").live("click",function(){
             $('#show_img3').remove();
             $('#img3').val('');
-            $('#imgshow3').val('');
-            img = img - 1;
-        });
-
-        $("#img_show1").live("click",function(){
-            var img_url1 = 'http://wx.shanxiuge.com/'+ $('#imgshow1').val();
-            var img_url2 = 'http://wx.shanxiuge.com/'+ $('#imgshow2').val();
-            var img_url3 = 'http://wx.shanxiuge.com/'+ $('#imgshow3').val();
-            wx.previewImage({
-                current: img_url1, // 当前显示图片的http链接
-                urls: [
-                    img_url1,
-                    img_url2,
-                    img_url3
-                ] // 需要预览的图片http链接列表
-            });
-        });
-        $("#img_show2").live("click",function(){
-            var img_url1 = 'http://wx.shanxiuge.com/'+ $('#imgshow1').val();
-            var img_url2 = 'http://wx.shanxiuge.com/'+ $('#imgshow2').val();
-            var img_url3 = 'http://wx.shanxiuge.com/'+ $('#imgshow3').val();
-            wx.previewImage({
-                current: img_url2, // 当前显示图片的http链接
-                urls: [
-                    img_url1,
-                    img_url2,
-                    img_url3
-                ] // 需要预览的图片http链接列表
-            });
-        });
-        $("#img_show3").live("click",function(){
-            var img_url1 = 'http://wx.shanxiuge.com/'+ $('#imgshow1').val();
-            var img_url2 = 'http://wx.shanxiuge.com/'+ $('#imgshow2').val();
-            var img_url3 = 'http://wx.shanxiuge.com/'+ $('#imgshow3').val();
-            wx.previewImage({
-                current: img_url3, // 当前显示图片的http链接
-                urls: [
-                    img_url1,
-                    img_url2,
-                    img_url3
-                ] // 需要预览的图片http链接列表
-            });
+            images = images - 1;
         });
     });
 </script>

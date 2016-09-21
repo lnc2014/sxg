@@ -30,10 +30,10 @@ $this->load->view('common/repair_header',array('title'=>$title));
         <a class="weui_btn weui_btn_primary" href="/index.php/repair/repair/reg" style="background-color:#f48000" id="reg">注册</a>
         <div class="weui_cells_tips show_word"><a href="/index.php/repair/repair/find_repair_psw" style="color: #f48000;"><u>找回密码</u></a></div>
     </div>
-</div>
-<div class="bottom_footer_login" >
+	<div class="bottom_footer_login" >
      @深圳市闪修哥维修技术有限公司
-</div>
+	</div>
+</div> 
 <?php
 $this->load->view('common/repair_footer');
 ?>

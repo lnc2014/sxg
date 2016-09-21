@@ -21,9 +21,11 @@ class Sxg_repair_user extends BaseModel{
      * 找出所有的维修人员
      * @return mixed
      */
-    public function findAllRepairs(){
-
+    public function findAllRepairs($where = ''){
         $this->db->select()->from($this->repair_table);
+        if(!empty($where)){
+            $this->db->where($where);
+        }
         $query = $this->db->get();
         $result = $query->result_array();
         return $result;

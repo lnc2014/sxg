@@ -149,12 +149,19 @@ class Sxg_order extends BaseModel{
      * 通过维修人员ID找到该维修人员的所有订单
      * @param $repair_user_id
      */
-    public function get_repair_order_list($repair_user_id){
+    public function get_repair_order_list($repair_user_id, $status = ''){
         $this->db->select('o.`id`,o.`status`,u.`user_name`,u.`mobile`,a.`province`,a.`city`,a.`area`,a.`sex`,a.`street`,o.`visit_option`,o.`visit_time`');
         $this->db->from('sxg_order AS o , sxg_user AS u , sxg_address AS a');
         $this->db->where("o.`repair_user_id`", $repair_user_id);
         $this->db->where('u.`user_id` = o.`user_id`');
         $this->db->where('a.`address_id` = o.`address_id`');
+        if(!empty($status)){
+            if($status == 3){
+                $this->db->where('o.`status` in (3,4,5)');
+            }else{
+                $this->db->where('o.`status`', $status);
+            }
+        }
         $this->db->order_by('o.`id`', 'DESC');
         $query = $this->db->get();
         return $query->result_array();

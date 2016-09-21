@@ -77,40 +77,57 @@ $this->load->view('common/nav');
                                         <th class="hidden-480">最近定位位置</th>
                                         <th class="hidden-480">距客户距离</th>
                                         <th class="hidden-480">状态</th>
-                                        <th class="hidden-480">订单状态</th>
+                                        <th class="hidden-480">操作</th>
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    <?php
+                                    foreach($repairs as $repair){?>
+                                        <tr>
+                                            <th class="center"><?php echo $repair['repair_user_id']?></th>
+                                            <th><?php echo $repair['user_name']?></th>
+                                            <th><?php echo $repair['repair_num']?></th>
+                                            <th class="hidden-480">深圳市南山区金融科技大厦</th>
+                                            <th class="hidden-480">100KM</th>
+                                            <th class="hidden-480"><?php if($repair['status'] == 1){echo "正常";}elseif($repair['status'] == 1){echo "审核中";}else{echo "冻结";}?></th>
+                                            <th class="hidden-480">
+                                                <div class="hidden-sm hidden-xs btn-group">
+                                                    <a href="javascript:;" onclick="off_order(<?php echo $order_id; ?>,<?php echo $repair['repair_user_id']?>)" class="btn btn-xs btn-success">分配订单</a>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    <?php }?>
+
                                     </tbody>
                                 </table>
                             </div><!-- /.span -->
                         </div>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <div class="dataTables_info" id="sample-table-2_info">Showing 1 to 10 of 23 entries</div>
-                            </div>
-                            <div class="col-xs-6">
-                                <div class="dataTables_paginate paging_bootstrap">
-                                    <ul class="pagination">
-                                        <li class="prev disabled">
-                                            <a href="#">
-                                                <i class="fa fa-angle-double-left">
-
-                                                </i>
-                                            </a>
-                                        </li>
-                                        <li class="prev disabled">
-                                            <a href="#"><i class="fa fa-angle-left"></i></a>
-                                        </li>
-                                        <li class="active"><a href="#">1</a></li>
-                                        <li><a href="#">2</a></li>
-                                        <li><a href="#">3</a></li>
-                                        <li class="next"><a href="#"><i class="fa fa-angle-right"></i></a></li>
-                                        <li class="next"><a href="#"><i class="fa fa-angle-double-right"></i></a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+<!--                        <div class="row">-->
+<!--                            <div class="col-xs-6">-->
+<!--                                <div class="dataTables_info" id="sample-table-2_info">Showing 1 to 10 of 23 entries</div>-->
+<!--                            </div>-->
+<!--                            <div class="col-xs-6">-->
+<!--                                <div class="dataTables_paginate paging_bootstrap">-->
+<!--                                    <ul class="pagination">-->
+<!--                                        <li class="prev disabled">-->
+<!--                                            <a href="#">-->
+<!--                                                <i class="fa fa-angle-double-left">-->
+<!---->
+<!--                                                </i>-->
+<!--                                            </a>-->
+<!--                                        </li>-->
+<!--                                        <li class="prev disabled">-->
+<!--                                            <a href="#"><i class="fa fa-angle-left"></i></a>-->
+<!--                                        </li>-->
+<!--                                        <li class="active"><a href="#">1</a></li>-->
+<!--                                        <li><a href="#">2</a></li>-->
+<!--                                        <li><a href="#">3</a></li>-->
+<!--                                        <li class="next"><a href="#"><i class="fa fa-angle-right"></i></a></li>-->
+<!--                                        <li class="next"><a href="#"><i class="fa fa-angle-double-right"></i></a></li>-->
+<!--                                    </ul>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
                     </div>
 
 
@@ -127,12 +144,43 @@ $this->load->view('common/nav');
         <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
     </a>
 </div><!-- /.main-container -->
-
-
 <?php
-
 $this->load->view('common/footer_js');
 ?>
-
+<script>
+    function off_order(order_id, repair_user_id){
+        if(!order_id){
+            alert('订单信息不正确');
+            return;
+        }
+        if(!repair_user_id){
+            alert('维修人员ID不能为空');
+            return;
+        }
+        if(!confirm('确定分配该订单给该维修人员?')){
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/index.php/admin/order/order_offer_data",
+            data: {
+                order_id : order_id,
+                repair_user_id : repair_user_id,
+            },
+            dataType: "json",
+            success: function(json){
+                if(json.result == '0000'){
+                    alert(json.info);
+                    window.location = '/index.php/admin/order/index';
+                }else {
+                    alert(json.info);
+                }
+            },
+            error: function(){
+                alert("加载失败");
+            }
+        });
+    }
+</script>
 
 

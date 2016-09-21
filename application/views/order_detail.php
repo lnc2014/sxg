@@ -12,7 +12,38 @@ $this->load->view('common/wx_header',array('title'=>$title));
     .div_address { background: url(/static/wx/images/bg_address.png) no-repeat; background-size: 100% 100%;}
     input[type='radio'] { margin-right: 0.3em; margin-top: -0.1em; background: url(/static/wx/images/radio.png) no-repeat; background-size: 100% 100%; }
     input[type='radio']:checked { background: url(/static/wx/images/radio_checked.png) no-repeat; background-size: 100% 100%; }
-
+    .weui_cell {
+        padding: 10px 15px;
+        position: relative;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-box-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+    }
+    .weui_label {
+        display: block;
+        width: 105px;
+        word-wrap: break-word;
+        word-break: break-all;
+    }
+    .weui_cell_primary {
+        -webkit-box-flex: 1;
+        -webkit-flex: 1;
+        flex: 1;
+    }
+    .weui_input {
+        width: 100%;
+        border: 0;
+        outline: 0;
+        -webkit-appearance: none;
+        background-color: transparent;
+        font-size: inherit;
+        color: inherit;
+        height: 1.41176471em;
+        line-height: 1.41176471;
+    }
 </style>
 <body>
 <div class="container">
@@ -53,13 +84,19 @@ $this->load->view('common/wx_header',array('title'=>$title));
                 <div class="uncertain">上门时间请于指定维修员协商</div>
             </div>
         </div>
-        <div class="main_t border_bottom" id="is_point_time" style="display: none;">
-            <div class="main_l float_left">指定时间</div>
-            <div class="main_r float_left color_base">
-<!--                <input style="margin-top: 10px"  type="datetime-local" value="" placeholder="">-->
-                <input class="weui_input" style="margin-top: 10px"  id="point_time" type="datetime-local" name="start_time" id="start_time" value="" placeholder="请选择出发时间">
+        <div class="weui_cell" id="is_point_time" style="display: none;">
+            <div class="weui_cell_hd"><label for="" class="weui_label">指定时间</label></div>
+            <div class="weui_cell_bd weui_cell_primary">
+                <input class="weui_input" type="datetime-local" id="point_time" value="" placeholder="">
             </div>
         </div>
+<!--        <div class="main_t border_bottom" id="is_point_time" style="display: none;">-->
+<!--            <div class="main_l float_left">指定时间</div>-->
+<!--            <div class="main_r float_left color_base">-->
+<!--<!--                <input style="margin-top: 10px"  type="datetime-local" value="" placeholder="">-->
+<!--                <input class="weui_input" style="margin-top: 10px"  id="point_time" type="datetime-local">-->
+<!--            </div>-->
+<!--        </div>-->
     </div>
     <div class="div_order_detail">
         <div class="d_row d_title border_bottom">订单详情</div>
@@ -166,7 +203,7 @@ $this->load->view('common/wx_header',array('title'=>$title));
         $('.select_visit').change(function(){
             visit_time = $('.select_visit').val();
             if(visit_time == 2){
-                $('#is_point_time').css('display','block');
+                $('#is_point_time').removeAttr("style");
             }else {
                 $('#is_point_time').css('display','none');
             }

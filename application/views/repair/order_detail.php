@@ -71,7 +71,7 @@ $this->load->view('common/wx_header',array('title'=>$title));
             </div>
         </div>
 <!--        只有已经结束才会出现维修单-->
-        <?php if($order['order_status'] == 7){?>
+        <?php if(!empty($repair_info)){?>
             <div class="repair_group div_repair_price">
                 <div class="d_row repair_price">
                     维修费用：<span class="color_price">¥<?php echo round($repair_info['parts_cost'] + $repair_info['labor_cost'], 2)?></span>
@@ -84,7 +84,7 @@ $this->load->view('common/wx_header',array('title'=>$title));
                     <div class="sp_row color_a8"><span>机器品牌</span><span>机器型号</span></div>
                     <div class="sp_row sub_value">
                         <input type="text" name="input_device_name" disabled value="<?php echo $repair_info['repair_band']?>">
-                        <input type="text" name="input_device_model" disabled value="<?php echo $repair_info['repair_model']?>>
+                        <input type="text" name="input_device_model" disabled value="<?php echo $repair_info['repair_model']?>">
                     </div>
                     <div class="sp_row color_a8"><span>故障现象</span></div>
                     <div class="sp_row">
@@ -137,12 +137,28 @@ $this->load->view('common/wx_header',array('title'=>$title));
             <div class="d_row color_a8">备注:<?php echo $order['remark'] ?></div>
         </div>
     </div>
-    <?php if($order['order_status'] != 7){?>
+    <?php if($order['order_status'] != 7){
+        //待接单
+            if($order['order_status'] == 1){?>
+                <div class="align_center">
+                    <a href="javascript:;" ><button class="btn btn_xl" type="button">转单</button></a>
+                    <?php
+                    if(empty($repair_info)){?>
+                        <a href="javascript:;" onclick="get_order(<?php echo $order['id']?>)"><button class="btn1 btn_xl1" type="button">接单</button></a>
+                    <?php }
+                    ?>
+                </div>
+            <?php }else{ ?>
     <div class="align_center">
-        <a href="javascript:;" onclick="finish(<?php echo $order['id']?>)"><button class="btn btn_xl" type="button">维修结束</button></a>
+        <a href="javascript:;" onclick="finish(<?php echo $order['id']?>)"><button class="btn btn_xl" type="button" <?php if(!empty($repair_info)){echo'style="width:100%"';}?>>维修结束</button></a>
+        <?php
+        if(empty($repair_info)){?>
         <a href="/index.php/repair/repair/fill_repair_order/<?php echo $order['id']?>"><button class="btn1 btn_xl1" type="button">调配件</button></a>
+        <?php }
+        ?>
     </div>
-    <?php }?>
+    <?php }
+    }?>
 </div>
 <script type="text/javascript" src="/static/wx/js/zepto.min.js"></script>
 <script type="text/javascript">
@@ -183,8 +199,34 @@ $this->load->view('common/wx_header',array('title'=>$title));
                 alert("加载失败");
             }
         });
-
-
+    }
+    function get_order(order_id){
+        if(!confirm('确定接单?')){
+            return;
+        }
+        if(!order_id){
+            alert('订单ID不能为空！');
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/index.php/repair/repair/get_order",
+            data: {
+                order_id : order_id
+            },
+            dataType: "json",
+            success: function(json){
+                if(json.result == '0000'){
+                    alert(json.info);
+                    window.location = '/index.php/repair/repair/order_list/2';
+                }else {
+                    alert(json.info);
+                }
+            },
+            error: function(){
+                alert("加载失败");
+            }
+        });
     }
 </script>
 </body>

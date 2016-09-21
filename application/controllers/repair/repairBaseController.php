@@ -15,6 +15,20 @@ class repairBaseController extends CI_Controller{
     }
 
     /**
+     * 检测维修人员是不是已经通过审核
+     */
+    public function check_is_used(){
+        if(!$this->check_is_login()){
+            redirect('/repair/repair/login');
+        };
+        $this->load->model('admin/Sxg_repair_user');
+        $is_used = $this->Sxg_repair_user->get_one(array('repair_user_id'=>$_SESSION['repair_user_id']));
+        if($is_used['status'] != 1){
+            return false;
+        }
+        return true;
+    }
+    /**
      * 接口api统一结果处理
      * @param $result
      * @param $data

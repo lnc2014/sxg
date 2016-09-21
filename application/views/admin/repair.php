@@ -115,10 +115,13 @@ $this->load->view('common/nav');
                                                 <div class="hidden-sm hidden-xs btn-group">
                                                     <?php
                                                     if($repair['status'] == 1){
-                                                        $repair_url = site_url("admin/user/frozen_user/{$repair['repair_user_id']}/0");
+                                                        $repair_url = site_url("admin/repair/pass_check/{$repair['repair_user_id']}/3");
                                                         echo '<a href="'.$repair_url.'" onclick="return confirm(\'确认冻结该账号吗？\')" class="btn btn-xs btn-danger">冻结该账户</a>';
+                                                    }else if($repair['status'] == 2){
+                                                        $repair_url = site_url("admin/repair/pass_check/{$repair['repair_user_id']}/3");
+                                                        echo '<a href="'.$repair_url.'" onclick="return confirm(\'确认通过审核吗？\')" class="btn btn-xs btn-warning">通过审核</a>';
                                                     }else{
-                                                        $repair_url = site_url("admin/user/frozen_user/{$repair['repair_user_id']}/1");
+                                                        $repair_url = site_url("admin/repair/pass_check/{$repair['repair_user_id']}");
                                                         echo '<a href="'.$repair_url.'" onclick="return confirm(\'确认恢复该账号吗？\')" class="btn btn-xs btn-info">恢复该账户</a>';
                                                     }?>
 

@@ -42,7 +42,6 @@ class User extends BaseController{
      */
 
     public function frozen_user(){
-
         $user_id = $this->uri->segment(4);//使用ci自带方法拿到admin_id
         $flag = $this->uri->segment(5);//使用ci自带方法拿到是否冻结还是解冻
 
@@ -75,7 +74,6 @@ class User extends BaseController{
                 exit;
             }
         }
-
     }
     /**
      * 冻结账号

@@ -36,7 +36,7 @@ class Order extends BaseController{
             $limit = $page_size;
             $offset =  ($page-1)*$page_size;
         }
-        $orders = $this->sxg_order->get_list($where, '*', $limit, $offset); //找出所有的订单
+        $orders = $this->sxg_order->get_list($where, '*', $limit, $offset, 'id'); //找出所有的订单
         $order_count = $this->sxg_order->get_list($where); //找出所有的订单
         $order_count = count($order_count);
         $order_count  = ceil($order_count/$page_size);
@@ -70,8 +70,44 @@ class Order extends BaseController{
         $order_id = $this->input->get("order_id");//分配维修人员方式
         if(empty($order_id)){
             $this->load->view('errors/error', array('code' => 500, 'msg' => '订单编号不能为空！'));
+        }
+        $this->load->model('admin/sxg_repair_user');
+        $repair = $this->sxg_repair_user->get_list(array('status' => 1, 'flag' => 1));
+        $this->load->view('admin/order_offer',array(
+            'repairs' => $repair,
+            'order_id' => $order_id,
+        ));
+    }
+    //处理分配订单的接口
+    public function order_offer_data(){
+        $order_id = $this->input->post("order_id", true);//分配订单ID
+        $repair_user_id = $this->input->post("repair_user_id", true);//分配维修人员ID
+        if(empty($order_id) || empty($repair_user_id)){
+            echo $this->apiReturn('0003', new stdClass(),  $this->response_msg["0003"]);
+            return;
+        }
+        $this->load->model('admin/sxg_order');
+        $this->load->model('admin/sxg_repair_user');
+        $repair_user = $this->sxg_repair_user->get_one(array('repair_user_id' => $repair_user_id));
+        $order = $this->sxg_order->get_one(array('id' => $order_id));
+        if(empty($order) || empty($repair_user)){
+            echo $this->apiReturn('0005', new stdClass(), $this->response_msg["0005"]);
+            return;
+        }
+        if($order['status'] != 1){
+            echo $this->apiReturn('0200', new stdClass(), $this->response_msg["0200"]);
+            return;
+        }
+        $update = $this->sxg_order->update(array(
+            'status' => 2,
+            'repair_user_id' => $repair_user_id
+        ),array('id' => $order_id));
+        if($update){
+            echo $this->apiReturn('0000', new stdClass(), $this->response_msg["0000"]);
+            return;
         }else{
-            $this->load->view('admin/order_offer');
+            echo $this->apiReturn('0002', new stdClass(), $this->response_msg["0002"]);
+            return;
         }
     }
     /**
@@ -119,7 +155,7 @@ class Order extends BaseController{
     public function get_order_detail(){
         $order_id = $this->input->post("order_id");
         if(empty($order_id)){
-            echo $this->api_return('0003', new stdClass(), '订单ID不能空！');
+            echo $this->apiReturn('0003', new stdClass(), '订单ID不能空！');
             return;
         }
         $this->load->model('admin/sxg_order');
@@ -158,15 +194,14 @@ class Order extends BaseController{
             }
             $data['pics'] = $pic;
         }
-        echo $this->api_return('0000', $data, 'success！');
+        echo $this->apiReturn('0000', $data, 'success！');
         return;
     }
     /**
      * 结款
      */
 
-    public function order_pay(){
-
+    public function order_pay(){ 
         $order_id = $this->uri->segment(4);//使用ci自带方法拿到order_id
         $flag = $this->uri->segment(5);//使用ci自带方法拿到是否结款
         $user_id = $this->uri->segment(6);//使用ci自带方法拿到是否结款

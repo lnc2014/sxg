@@ -86,12 +86,11 @@ $this->load->view('common/nav');
                                             <td>
                                                 <div class="hidden-sm hidden-xs btn-group">
                                                     <?php
-                                                    if($repair['status'] == 1){
-                                                        $repair_url = site_url("admin/user/frozen_user/{$repair['repair_user_id']}/0");
-                                                        echo '<a href="'.$repair_url.'" onclick="return confirm(\'确认冻结该账号吗？\')" class="btn btn-xs btn-danger">冻结该账户</a>';
+                                                    if($repair['status'] == 2){
+                                                        $repair_url = site_url("admin/repair/pass_check/{$repair['repair_user_id']}");
+                                                        echo '<a href="'.$repair_url.'" onclick="return confirm(\'通过审核吗？\')" class="btn btn-xs btn-warning">通过审核</a>';
                                                     }else{
-                                                        $repair_url = site_url("admin/user/frozen_user/{$repair['repair_user_id']}/1");
-                                                        echo '<a href="'.$repair_url.'" onclick="return confirm(\'确认恢复该账号吗？\')" class="btn btn-xs btn-info">恢复该账户</a>';
+                                                        echo '正常';
                                                     }?>
 
                                                 </div>
@@ -141,13 +140,9 @@ $this->load->view('common/nav');
         </div><!-- /.page-content -->
     </div><!-- /.main-content -->
 
-
     <?php
-
     $this->load->view('common/footer');
     ?>
-
-
     <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
         <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
     </a>

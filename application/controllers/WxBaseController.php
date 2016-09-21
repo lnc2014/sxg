@@ -91,5 +91,47 @@ class WxBaseController extends CI_Controller
         $this->load->library('sms');
         return $this->sms->send_register($mobile, $code);
     }
+    /**
+     * 获取微信用户openid
+     * @return string
+     */
+    public function get_user_openid(){
+        include_once(FCPATH . "public/user-pay/WxOpenIdHelper.php");
+        $wxopenidhelper = new WxOpenIdHelper();
+        $data = $wxopenidhelper->getOpenId();
+        $_SESSION['jspayOpenId'] = $data['openid'];
+        return $data;
+    }
+    /**
+     * 通过授权拿到用户的openid和access_token
+     */
+    public function get_user_snaspi(){
+        include_once(FCPATH . "public/user-pay/WxOpenIdHelper.php");
+        $wxopenidhelper = new WxOpenIdHelper();
+        $data = $wxopenidhelper->getOpenId();
+        //获取到授权之后，将授权存入session中
+        $_SESSION['access_token'] = $data['access_token'];
+        $_SESSION['jspayOpenId'] = $data['openid'];
+        return $data;
+    }
+    /**
+     * 获取用户的头像
+     * @param $open_id
+     * @param $token
+     * @return mixed
+     */
+    public function get_user_info_by_snsapi($open_id, $token){
+        $url="https://api.weixin.qq.com/sns/userinfo?access_token=$token&openid=$open_id&lang=zh_CN";
+        $result=  file_get_contents($url);
+
+        $result=  explode(",", $result);
+        $nick_name=  explode(":",$result[1]);
+        $head_url=  explode(":", $result[7]);
+        $data["nick_name"]= str_replace('"',"",$nick_name[1]);
+        $data["head_url"]=$head_url[1].":".$head_url[2];
+        $data['head_url'] = str_replace('"',"",$data['head_url']);
+        $data['head_url'] = stripslashes($data['head_url']);
+        return $data;
+    }
 
 }

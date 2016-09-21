@@ -53,17 +53,14 @@ if ($data["return_code"] == "FAIL") {
     $log_->log_result($log_name,"【接收消息】接收到的notify通知 : \n".$xml."\n");
 
     $host = "http://".$_SERVER['HTTP_HOST']."/";
-    $url = $host."user/notify";
+    $url = $host."index.php/sxg/notify";
     $data = array(
         'attach' => $attach,
         'wx_order_str' => $trade_no,
-        'out_trade_no' => $out_trade_no,
+        'order_no' => $out_trade_no,
         'total_fee' => $total_fee,
     );
     $result = https_post($url,$data);
-    //用户支付成功，发送微信，发送短信在处理完回调在发
-
-
 }
 /**
  * 	作用：将xml转为array

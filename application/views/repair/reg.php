@@ -35,24 +35,25 @@ $this->load->view('common/repair_header',array('title'=>$title));
     <div class="weui_btn_area repair_input">
         <a class="weui_btn weui_btn_primary"  style="background-color:#ea3e00" id="reg">下一步</a>
     </div>
-</div>
+    <div class="bottom_footer">
+        <div class="next_word">
+            <div style="display:inline">
+                <input type="checkbox" checked id="is_agree" style="height:20px;width:20px;" />
+            </div>
+            <div style="color:#aba8a8;display:inline">
+                点击下一步，即表示您已经仔细阅读并同意
+            </div>
+            <div style="color:#f48000;display:inline">《闪修哥免责声明》</div>
+            <br>
+            <br>
+            <br>
+            @深圳市闪修哥维修技术有限公司
+        </div>
 
-<div class="bottom_footer">
-    <div class="next_word">
-        <div style="display:inline">
-            <input type="checkbox" checked id="is_agree" style="height:20px;width:20px;" />
-        </div>
-        <div style="color:#aba8a8;display:inline">
-            点击下一步，即表示您已经仔细阅读并同意
-        </div>
-        <div style="color:#f48000;display:inline">《闪修哥免责声明》</div>
-        <br>
-        <br>
-        <br>
-        @深圳市闪修哥维修技术有限公司
     </div>
-
 </div>
+
+
 <?php
 $this->load->view('common/repair_footer');
 ?>
@@ -140,6 +141,7 @@ $(function(){
             success: function(json){
                 if (json.result == "0000" ) {
                     alert('注册成功！');
+                    window.location = '/index.php/repair/repair/repair_info';
                 } else {
                     alert(json.info);
                 }

@@ -24,34 +24,48 @@ $this->load->view('common/wx_header',array('title'=>$title));
                 <span class="color_base"><?php  echo $order['order_no']?></span>
             </div>
         </div>
-        <div class="repair_group div_repair_price">
-            <div class="d_row repair_price">
-                维修费用：<span class="color_price">¥60</span>
-                <img src="/static/wx/images/icon-arrow.png" class="float_right arror_r" >
-            </div>
-        </div>
-        <div class="repair_group div_repair_project hide">
-            <div class="repair_subject">
-                <div class="d_row color_base border_bottom">维修项目1</div>
-                <div class="sp_row color_a8"><span>机器品牌</span><span>机器型号</span></div>
-                <div class="sp_row sub_value">
-                    <input type="text" name="input_device_name" value="爱普生">
-                    <input type="text" name="input_device_model" value="vs212312">
-                </div>
-                <div class="sp_row color_a8"><span>故障现象</span></div>
-                <div class="sp_row"><input type="text" name="input_device_fault" class="rsf_input" value="辅导解放军抵抗力"></div>
-                <div class="sp_row color_a8"><span>更换配件/耗材</span><span>人工费</span></div>
-                <div class="sp_row">
-                    <select name="input_parts_replace"><option value='1'>是</option><option value='0'>否</option></select>
-                    <input type="text" name="input_device_labour" value="100">
-                </div>
-                <div class="sp_row color_a8"><span>配件/耗材名称</span><span>配件/耗材价格</span></div>
-                <div class="sp_row">
-                    <input type="text" name="input_parts_name" value="墨盒">
-                    <input type="text" name="input_parts_price" value="100">
+
+        <!--        只有已经结束才会出现维修单-->
+        <?php if(!empty($repair_info)){?>
+            <div class="repair_group div_repair_price">
+                <div class="d_row repair_price">
+                    <input type="hidden" value="<?php echo round($repair_info['parts_cost'] + $repair_info['labor_cost'], 2)?>" id="pay_all_money">
+                    <input type="hidden" value="<?php echo  $order['order_no']?>" id="order_no">
+                    维修费用：<span class="color_price">¥<?php echo round($repair_info['parts_cost'] + $repair_info['labor_cost'], 2)?></span>
+                    <img src="/static/wx/images/icon-arrow.png" class="float_right arror_r" >
                 </div>
             </div>
-        </div>
+            <div class="repair_group div_repair_project hide">
+                <div class="repair_subject">
+                    <div class="d_row color_base border_bottom">维修项目1</div>
+                    <div class="sp_row color_a8"><span>机器品牌</span><span>机器型号</span></div>
+                    <div class="sp_row sub_value">
+                        <input type="text" name="input_device_name" disabled value="<?php echo $repair_info['repair_band']?>">
+                        <input type="text" name="input_device_model" disabled value="<?php echo $repair_info['repair_model']?>">
+                    </div>
+                    <div class="sp_row color_a8"><span>故障现象</span></div>
+                    <div class="sp_row">
+                        <input type="text" name="input_device_fault" class="rsf_input" disabled value="<?php echo $repair_info['repair_problem']?>">
+                    </div>
+                    <div class="sp_row color_a8"><span>更换配件/耗材</span><span>人工费</span></div>
+                    <div class="sp_row">
+                        <select name="input_parts_replace" disabled>
+                            <?php if($repair_info['is_change_parts'] == 1){?>
+                                <option value='1'>是</option>
+                            <?php}else{ ?>
+                                <option value='0'>否</option>
+                            <?php }?>
+                        </select>
+                        <input type="text" name="input_device_labour" disabled value="<?php echo $repair_info['labor_cost']?>">
+                    </div>
+                    <div class="sp_row color_a8"><span>配件/耗材名称</span><span>配件/耗材价格</span></div>
+                    <div class="sp_row">
+                        <input type="text" name="input_parts_name" disabled value="<?php echo $repair_info['parts_name']?>">
+                        <input type="text" name="input_parts_price" disabled value="<?php echo $repair_info['parts_cost']?>">
+                    </div>
+                </div>
+            </div>
+        <?php }?>
         <div class="order_group">
             <div class="ct_row">
                 <span class="color_base"><?= $address['name'] ?><?php if($address['sex']==1){echo '先生';}else{echo '女士';}?></span>
@@ -62,17 +76,20 @@ $this->load->view('common/wx_header',array('title'=>$title));
                 <span class="color_base"><?php  echo $address['province'].$address['city'].$address['area'].$address['street']?></span>
             </div>
         </div>
+
         <div class="repair_group">
+            <?php if(!empty($repair_user)){?>
             <div class="d_row border_bottom">
                 <span class="color_a8 r_title">维修员</span>
                 <div class="r_cont">
                     <label><?php if($order['repair_assign'] == 1){ echo '随机指派';}else{ echo '指定维修人员';}?></label>
                     <div class="color_a8 nominee_info">
-                        <div>姓名：张三&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;工号：123345</div>
-                        <div>联系电话：13578656765</div>
+                        <div>姓名：<?php echo $repair_user['user_name']?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;工号：<?php echo $repair_user['repair_num']?></div>
+                        <div>联系电话：<?php echo $repair_user['mobile']?></div>
                     </div>
                 </div>
             </div>
+            <?php }?>
             <div class="d_row">
                 <span class="color_a8 r_title">上门时间</span>
                 <span class=""><?php if($order['visit_option'] == 2){ echo date('Y-m-d H:i:s',$order['visit_time']);}elseif($order['visit_option'] == 3){echo '立即上门';}else{echo'跟维修人员商定';} ?></span>
@@ -88,9 +105,11 @@ $this->load->view('common/wx_header',array('title'=>$title));
             <div class="d_row color_a8">备注:<?php echo $order['remark'] ?></div>
         </div>
     </div>
+    <?php if(!empty($repair_info)){?>
     <div class="align_center">
         <a href="javascript:;" onclick="jspay()"><button class="btn btn_xl" type="button">维修结束并支付</button></a>
     </div>
+    <?php }?>
 </div>
 <script type="text/javascript" src="/static/wx/js/zepto.min.js"></script>
 <script type="text/javascript">
@@ -108,10 +127,14 @@ $this->load->view('common/wx_header',array('title'=>$title));
 <script type="text/javascript">
 
     function jspay(){
+        var pay_all_money = $("#pay_all_money").val();
+        var order_no = $("#$order_no").val();
         $.ajax({
             type: "POST",
             url: "/index.php/sxg/wxpay_params",
             data: {
+                pay_all_money:pay_all_money,
+                order_no:order_no
             },
             dataType: "json",
             success: function(json){

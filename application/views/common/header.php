@@ -37,6 +37,7 @@ $static_url = $this->config->item('static_url');
     <link rel="stylesheet" href="<?php echo $base_css_url?>/ace-rtl.min.css" />
 
     <link rel="stylesheet" href="<?php echo $base_css_url?>/ace-ie.min.css" />
+    <link rel="stylesheet" href="/static/css/imgbox.css" />
     <![endif]-->
 
     <!-- inline styles related to this page -->

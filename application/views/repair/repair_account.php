@@ -40,7 +40,7 @@ $this->load->view('common/repair_header',array('title'=>$title));
                 <p>我的佣金</p>
             </div>
         </a>
-        <a class="weui_cell" href="javascript:;" style="font-size: 20px">
+        <a class="weui_cell" href="/index.php/repair/repair/repair_msg" style="font-size: 20px">
             <div class="weui_cell_hd"><img src="/static/wx/images/repairs/xiaoxi.png" alt="" style="width:35px;margin-right:5px;display:block"></div>
             <div class="weui_cell_bd weui_cell_primary">
                 <p>新消息通知</p>

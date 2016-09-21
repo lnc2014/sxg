@@ -48,4 +48,21 @@ class Test extends CI_Controller{
 
         print_r($result);
     }
+
+    /**
+     * 测试时间
+     */
+    public function time(){
+        $this->load->view('time');
+    }
+
+    public function get_pic(){
+        $url = "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=ZecazWfPeN5DO_pWX0hTLjKZSVBDIrGJhYenuX9yFpXfzsUXlS4dS4F_-8W7rR3GBIa9_dzPmiqYmofS4RFzumA8jygKTsrovoysRv0713OTTYciRIxXrlrDodLfahs1WUJjCIAOMB&media_id=o55HpWRtkWHb6YKM5ZxpyrlQr4K1ZDBoZAXuqJ2XMcFErPER2HWMRlzVPzCzzoHL";
+        $check_name = file_get_contents($url);
+        $photoname = date("YmdHis").".jpg";
+        $db_path = "static/upload/".date('Ymd').'/'.$photoname;
+        $path = ROOTPATH."static/upload/".date('Ymd').'/'.$photoname;
+        $r = file_put_contents($path, $check_name);
+        var_dump($r);
+    }
 }

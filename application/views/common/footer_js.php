@@ -15,6 +15,7 @@ $static_url = $this->config->item('static_url');
 <script src="<?php echo $base_js_url?>/jquery.min.js"></script>
 <script src="<?php echo $base_js_url?>/jquery.mobile.custom.min.js"></script>
 <script src="<?php echo $base_js_url?>/bootstrap.min.js"></script>
+<script src="/static/js/jquery.imgbox.js"></script>
 
 <!-- page specific plugin scripts -->
 

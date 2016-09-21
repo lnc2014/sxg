@@ -18,9 +18,15 @@ class BaseController extends CI_Controller{
         parent::__construct();
         session_start(600);
         $this->load->helper('url');
+
+        header("Content-type:text/html;charset=utf-8");
+        date_default_timezone_set('PRC'); //设置中国时区
+        $this->config->load('common/config_response', TRUE); //统一返回状态码loading
+        $this->response_msg = $this->config->item('response', 'common/config_response');
         $this->admin_name = empty($_SESSION['admin_name'])?'':$_SESSION['admin_name'];
         $this->admin_id = empty($_SESSION['admin_id'])?'':$_SESSION['admin_id'];
         $this->admin_sign = empty($_SESSION['sign'])?'':$_SESSION['sign'];
+        $this->data = array();
         if(!$this->check_login()){
             redirect('/admin/login');
         }
@@ -32,9 +38,7 @@ class BaseController extends CI_Controller{
      * @return bool
      */
     public function check_login(){
-
         if(isset($this->admin_sign) && !empty($this->admin_sign)){
-
             $params = array(
                 'admin_name' =>$this->admin_name,
                 'admin_id' =>$this->admin_id,
@@ -51,7 +55,6 @@ class BaseController extends CI_Controller{
         }
         return false;
     }
-
     /**
      * 接口api统一结果处理
      * @param $result
@@ -59,10 +62,22 @@ class BaseController extends CI_Controller{
      * @param $info
      * @return string
      */
-    public function api_return($result, $data, $info) {
+    public function apiReturn($result, $data, $info) {
         $arr["result"] = $result;
         $arr["data"] = $data === null ? '' : $data;
         $arr["info"] = $info;
         return json_encode($arr);
+    }
+    //检测订单是不是有效订单
+    public function check_order($order_id){
+        if(empty($order_id)){
+            return false;
+        }
+        $this->load->model('admin/sxg_order');
+        $order = $this->sxg_order->get_one(array('id'=>$order_id));
+        if(empty($order)){
+            return false;
+        }
+        return $order;
     }
 }

@@ -1,0 +1,1 @@
+<input class="weui_input" type="datetime-local" value="" placeholder="">

@@ -12,16 +12,15 @@ class Sxg extends WxBaseController{
      * 快速登录页面
      */
     public function index(){
-        $title = '闪修哥快速下单';
         $this->check_user();
+        redirect('sxg/quick_order');
         //获取到用户的信息
-        $this->load->model('admin/sxg_user');
-        $user = $this->sxg_user->get_one(array('wx_openid' => $_SESSION['jspayOpenId']), 'user_name,headimgurl,last_model,last_band');
-        $this->load->view('quick_order',array(
-            'title' => $title,
-            'user' => $user
-        ));
-
+//        $this->load->model('admin/sxg_user');
+//        $user = $this->sxg_user->get_one(array('wx_openid' => $_SESSION['jspayOpenId']), 'user_name,headimgurl,last_model,last_band');
+//        $this->load->view('quick_order',array(
+//            'title' => $title,
+//            'user' => $user
+//        ));
     }
     /**
      *验证码判断
@@ -64,12 +63,15 @@ class Sxg extends WxBaseController{
      * 快速下单的首页
      */
     public function quick_order(){
-        $title = "快速下单";
+        $title = "闪修哥快速下单";
         $this->load->model('admin/sxg_user');
+        $this->load->library('Jssdk');
+        $sign_package = $this->jssdk->getSignPackage();
         $user = $this->sxg_user->get_one(array('wx_openid' => $_SESSION['jspayOpenId']), 'user_name,headimgurl,last_model,last_band');
         $this->load->view('quick_order',array(
             'title' => $title,
-            'user' => $user
+            'user' => $user,
+            'sign_package' => $sign_package,
         ));
     }
     /**
@@ -253,11 +255,21 @@ class Sxg extends WxBaseController{
             'address_id' => $order['address_id']
         ));
 
+        $this->load->model('admin/sxg_repair_info');
+        $this->load->model('admin/sxg_repair_user');
+        $repair_info = $this->sxg_repair_info->get_one(array(
+            'order_id' => $order_id
+        ));
+        $repair_user = $this->sxg_repair_user->get_one(array(
+            'repair_user_id' => $order['repair_user_id']
+        ),'mobile,user_name,repair_num');
         $title = '订单详情';
         $this->load->view('pay_order_detail',array(
             'title' => $title,
             'order' => $order,
             'address' => $address,
+            'repair_info' => $repair_info,
+            'repair_user' => $repair_user
         ));
 
     }
@@ -653,55 +665,15 @@ class Sxg extends WxBaseController{
         }
     }
 
-    /**
-     * 获取微信用户openid
-     * @return string
-     */
-    public function get_user_openid(){
-        include_once(FCPATH . "public/user-pay/WxOpenIdHelper.php");
-        $wxopenidhelper = new WxOpenIdHelper();
-        $data = $wxopenidhelper->getOpenId();
-        $_SESSION['jspayOpenId'] = $data['openid'];
-        return $data;
-    }
-    /**
-     * 通过授权拿到用户的openid和access_token
-     */
-    public function get_user_snaspi(){
-        include_once(FCPATH . "public/user-pay/WxOpenIdHelper.php");
-        $wxopenidhelper = new WxOpenIdHelper();
-        $data = $wxopenidhelper->getOpenId();
-        //获取到授权之后，将授权存入session中
-        $_SESSION['access_token'] = $data['access_token'];
-        $_SESSION['jspayOpenId'] = $data['openid'];
-        return $data;
-    }
-    /**
-     * 获取用户的头像
-     * @param $open_id
-     * @param $token
-     * @return mixed
-     */
-    public function get_user_info_by_snsapi($open_id, $token){
-        $url="https://api.weixin.qq.com/sns/userinfo?access_token=$token&openid=$open_id&lang=zh_CN";
-        $result=  file_get_contents($url);
-
-        $result=  explode(",", $result);
-        $nick_name=  explode(":",$result[1]);
-        $head_url=  explode(":", $result[7]);
-        $data["nick_name"]= str_replace('"',"",$nick_name[1]);
-        $data["head_url"]=$head_url[1].":".$head_url[2];
-        $data['head_url'] = str_replace('"',"",$data['head_url']);
-        $data['head_url'] = stripslashes($data['head_url']);
-        return $data;
-    }
 
     /**
      * 微信支付参数拼接
      */
     public function wxpay_params(){
         $attach = '';//附加数据，支付用户ID和订单编号和司机id
-        $total_fee = 1;
+        $pay_all_money = $this->input->post('pay_all_money', true);
+        $order_no = $this->input->post('order_no', true);
+        $total_fee = empty($pay_all_money) ? 1 : $pay_all_money;
         $openid = $_SESSION['jspayOpenId'];
         include_once(FCPATH . 'public/user-pay/lib/WxPayException.php');
         include_once(FCPATH . 'public/user-pay/lib/WxPayApi.php');
@@ -710,12 +682,11 @@ class Sxg extends WxBaseController{
         include_once(FCPATH . 'public/user-pay/lib/WxPayData.php');
         $tools = new JsApiPay();
         $input = new WxPayUnifiedOrder();
-        $input->SetBody('闪修哥微信费用支付');
+        $input->SetBody('闪修哥维修费用支付');
         $input->SetAttach($attach);
-        $input->SetOut_trade_no('shanxiuge'.date("YmdHis").rand(1000,9999));    //订单号
-        $input->SetOut_trade_no(date("YmdHis"));
-        //$input->SetTotal_fee($total_fee * 100);   //总费用
-        $input->SetTotal_fee($total_fee);   //总费用
+        $input->SetOut_trade_no($order_no);    //订单号
+        $input->SetTotal_fee($total_fee * 100);   //总费用
+//        $input->SetTotal_fee($total_fee);   //总费用
         $input->SetTime_start(date("YmdHis"));
         //$input->SetTime_expire(date("YmdHis", time() + 1200));
         $input->SetNotify_url(WxPayConfig::NOTIFY_URL);   //支付回调地址，这里改成你自己的回调地址。
@@ -724,5 +695,76 @@ class Sxg extends WxBaseController{
         $order = WxPayApi::unifiedOrder($input);
         $jsApiParameters = $tools->GetJsApiParameters($order);
         echo $jsApiParameters;
+    }
+
+    /**
+     * 处理微信支付回调
+     */
+    public function notify(){
+        $wx_order_str =  $this->input->post("wx_order_str");
+        $order_no =  $this->input->post("order_no");
+        $real_pay =  $this->input->post("total_fee");
+        $real_pay =  round($real_pay/100, 2);//微信回调是以分为单位
+        $log_data['post_data'] = $_POST;
+        if($real_pay < 0 || empty($order_num) || empty($wx_order_str)){
+            $log_data['title'] = '回调参数为空';
+            $this->logs_debug($log_data, "wx_notify_error");
+            return;
+        }
+        $this->load->model('admin/sxg_order');
+        $order = $this->sxg_order->get_one(array('order_no'=>$order_no));
+        if(empty($order)){
+            $log_data['title'] = '回调订单不存在';
+            $this->logs_debug($log_data, "wx_notify_error");
+            return;
+        }
+
+        $update_data = array();
+        if($update > 0){
+            if ($income_type == 1) {
+                $this->send_prepay_msg($orders, $motorcade_id);
+            } elseif ($income_type == 2) {
+                $orders['real_pay'] = $income;
+                $this->send_afterpay_msg($orders);
+            }
+            echo $this->api_return("0000", '', $this->response_msg["0000"]);
+            return;
+        }else{
+            echo $this->api_return("0002", '', $this->response_msg["0002"]);
+            return;
+        }
+    }
+    //将前台传递过来的图片上传到服务器
+    public function save_pic_to_server(){
+        $media_id =  $this->input->post("media_id", true);
+        if(empty($media_id)){
+            echo $this->apiReturn("0000", '', '上传失败');
+            return;
+        }
+        //处理一步，将上传到微信服务器的图片下载到本地服务器
+        $path = APPPATH."cache/sxg_access_token.json";
+        if (file_exists($path)) {
+            $data = json_decode(file_get_contents($path));
+            $access_token = $data->access_token;
+        } else {
+            $access_token = 0;
+        }
+        $image_url = "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token={$access_token}&media_id={$media_id}";
+        $image = file_get_contents($image_url);
+        if(empty($image)){
+            echo $this->apiReturn("0000", '', '上传失败');
+            return;
+        }
+        $savename = ROOTPATH."static/upload/".date('Ymd').'/';
+        if(!file_exists($savename))
+        {
+            mkdir($savename);
+            chmod($savename,0777);
+        }
+        $image_name = date("YmdHis").rand(1000,9999).".jpg";
+        $db_path = "static/upload/".date('Ymd').'/'.$image_name;
+        $path = ROOTPATH."static/upload/".date('Ymd').'/'.$image_name;
+        file_put_contents($path, $image);
+        echo $this->apiReturn("0000", $db_path, '上传成功');
     }
 }

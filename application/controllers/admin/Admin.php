@@ -12,18 +12,14 @@ class Admin extends BaseController{
     /**
      * 后台登录首页
      */
-
     public function index(){
-
         $this->load->view('admin/index');
-
     }
 
     /**
      * 账号管理
      */
     public function account(){
-
         $this->load->model('admin/sxg_admin');
         $admins = $this->sxg_admin->findAdminByAdminId($_SESSION['admin_id']);
         $this->load->view('admin/account',array(
@@ -37,10 +33,8 @@ class Admin extends BaseController{
      */
 
     public function frozen_account(){
-
         $admin_id = $this->uri->segment(4);//使用ci自带方法拿到admin_id
         $flag = $this->uri->segment(5);//使用ci自带方法拿到是否冻结还是解冻
-
         if(empty($admin_id)){
             //跳转到错误页面
             $this->load->view('errors/error',array('code'=>500,'msg'=>'冻结账号不能为空！'));
@@ -70,7 +64,6 @@ class Admin extends BaseController{
                 exit;
             }
         }
-
     }
 
     /**
@@ -78,13 +71,10 @@ class Admin extends BaseController{
      */
     public function delete_account(){
         $admin_id = $this->uri->segment(4);//使用ci自带方法拿到admin_id
-
-
         if(empty($admin_id)){
             //跳转到错误页面
             $this->load->view('errors/error',array('code'=>500,'msg'=>'冻结账号不能为空！'));
         }else{
-
             $this->load->model('admin/sxg_admin');
             $admin = $this->sxg_admin->delete_account($admin_id);
 
